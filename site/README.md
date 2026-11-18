@@ -9,7 +9,8 @@ site/
   js/main.js              animações, menu e rolagem
   js/config.js            ← telefone, e-mail, Instagram, CNPJ e mensagens do WhatsApp
   assets/images/          telas dos projetos (WebP)     assets/fonts/  Instrument Serif e Inter
-  favicon.svg
+  favicon.svg   404.html   privacidade.html   robots.txt   sitemap.xml
+  assets/og-image.png     imagem que aparece ao compartilhar o link
   projetos/
     clinica/  advocacia/  estetica/  servicos/    4 demonstrações navegáveis (index.html cada)
     demo.css  demo.js                              partes comuns das demonstrações
@@ -27,9 +28,23 @@ Edite só [`js/config.js`](js/config.js). Cada botão de WhatsApp abre uma mensa
 São **conceituais, com marcas e dados fictícios**, e dizem isso na página. Não os apresente como trabalhos de clientes.
 Os formulários deles não enviam nada; só mostram uma resposta de exemplo.
 
+## Antes de publicar: definir o endereço do site
+Os metadados de compartilhamento (WhatsApp, Instagram, Google) precisam do endereço completo. Depois de ter o link ou o domínio, rode na pasta do projeto:
+
+    python scripts/definir_dominio.py https://www.seudominio.com.br
+
+Pode rodar de novo quando trocar de endereço (por exemplo, de `.pages.dev` para o domínio próprio).
+Enquanto isso não for feito, o site funciona normalmente, mas a pré-visualização do link não aparece.
+
+## Testar tudo
+Com o servidor rodando (`python -m http.server 5500` na pasta `site`), em outro terminal, na pasta `marca`:
+
+    python verificar_site.py        # links, arquivos, SEO básico, JavaScript e botões de WhatsApp
+    python testar_interacoes.py     # menu do celular, formulários e menus das demonstrações
+
 ## Imagens do portfólio
 As imagens em `assets/images/` são capturas das demonstrações. Para refazê-las depois de mudar uma demo:
-`cd ../marca && python build.py telas` (precisa de Chrome e do Pillow: `pip install pillow`).
+`cd ../marca && python build.py telas og` (precisa de Chrome e do Pillow: `pip install pillow`). O `og` refaz a imagem de compartilhamento e o ícone.
 
 ## Acessibilidade e desempenho
 Respeita `prefers-reduced-motion`, tem foco visível, menu acessível por teclado (Esc fecha), textos alternativos nas imagens,
