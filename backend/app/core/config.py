@@ -51,7 +51,7 @@ class Settings(BaseSettings):
     outreach_min_interval_seconds: int = Field(45, ge=0, le=3600)
     # Dados usados na assinatura/oferta das mensagens.
     outreach_sender_name: str = ""
-    outreach_sender_company: str = "GTech"
+    outreach_sender_company: str = "GTech Digital Studio"
     outreach_offer: str = "criação de landing pages profissionais para atrair mais clientes"
 
     @property
