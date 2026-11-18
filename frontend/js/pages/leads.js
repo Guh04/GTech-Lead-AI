@@ -140,6 +140,29 @@ export async function mount(view) {
     } catch (err) { toastError(err); }
   });
 
+  // Limpeza: mostra a prévia (nada é apagado) e só apaga após confirmação explícita.
+  $('#cleanup-btn', view).addEventListener('click', async (e) => {
+    try {
+      const prev = await withLoading(e.currentTarget, () => api.get('/leads/cleanup/preview'));
+      if (!prev.deletable) {
+        toast(prev.protected ? `Nada a apagar: os ${prev.protected} lead(s) de dias anteriores já foram contatados ou pediram para não ser contatados.` : 'Não há leads de dias anteriores.', 'info');
+        return;
+      }
+      const ok = await confirmDialog({
+        title: 'Limpar leads de dias anteriores',
+        message: `Apagar ${prev.deletable} lead(s) criados antes de hoje?`,
+        detail: `Os leads de hoje ficam. ${prev.protected ? `${prev.protected} lead(s) antigos serão mantidos por já terem sido contatados, estarem em negociação ou terem pedido para não ser contatados. ` : ''}O histórico e as mensagens dos leads apagados também são removidos. Esta ação não pode ser desfeita.`,
+        confirmLabel: `Apagar ${prev.deletable} lead(s)`,
+        danger: true,
+      });
+      if (!ok) return;
+      const res = await api.post('/leads/cleanup');
+      toast(`${res.deleted} lead(s) de dias anteriores apagados.`, 'success');
+      page = 1;
+      load();
+    } catch (err) { toastError(err); }
+  });
+
   view.addEventListener('click', async (e) => {
     if (e.target.closest('[data-new]')) return create();
     if (e.target.closest('[data-retry]')) return load();
