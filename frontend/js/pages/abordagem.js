@@ -134,7 +134,9 @@ export async function mount(view) {
             await api.post(`/outreach/${id}/skip`);
             break;
           case 'send': {
-            if (body) await api.patch(`/outreach/${id}`, { body }).then(() => api.post(`/outreach/${id}/approve`)).catch(() => {}); // só reaprova se o texto foi editado
+            if (body !== undefined && body !== $('[data-body]', card).defaultValue.trim()) {
+              throw new Error('Você editou o texto. Clique em “Salvar texto” e aprove novamente antes de enviar.');
+            }
             const res = await api.post(`/outreach/${id}/send`);
             const w = window.open(res.whatsapp_url, '_blank');
             if (w) w.opener = null;
