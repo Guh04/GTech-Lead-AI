@@ -262,7 +262,7 @@ class LeadService:
         return now.replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc).isoformat()
 
     @staticmethod
-    def _cleanup_filters(cutoff: str) -> list[Filter]:
+    def _cleanup_filters(cutoff: str) -> "list[Filter]":  # aspas: dentro da classe, `list` é o método list()
         # Só apaga o que ainda não andou no funil e não pediu opt-out: quem já foi contatado (ou pediu para
         # não ser contatado) continua no banco, senão uma nova busca o traria de volta como "lead novo".
         return [
