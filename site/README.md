@@ -1,24 +1,43 @@
-# Site / landing page da GTech
+# Site da GTech Digital Studio
 
-Página estática (HTML, CSS e JS puros). Não tem servidor nem banco de dados.
+Site institucional em **HTML, CSS e JavaScript puros** (sem frameworks, sem build, sem cookies nem rastreadores).
 
-## Como personalizar
-Edite **só** o arquivo [`config.js`](config.js): marca, WhatsApp, e-mail, Instagram, seu nome ou razão social, CNPJ, cidade, prazo e preços.
-Enquanto faltar algo obrigatório, a página mostra um aviso amarelo no topo e destaca os campos pendentes em amarelo.
-Preço vazio aparece como "Sob orçamento".
+```
+site/
+  index.html              página principal
+  css/style.css           estilos do site     css/fonts.css  fontes locais
+  js/main.js              animações, menu e rolagem
+  js/config.js            ← telefone, e-mail, Instagram, CNPJ e mensagens do WhatsApp
+  assets/images/          telas dos projetos (WebP)     assets/fonts/  Instrument Serif e Inter
+  favicon.svg
+  projetos/
+    clinica/  advocacia/  estetica/  servicos/    4 demonstrações navegáveis (index.html cada)
+    demo.css  demo.js                              partes comuns das demonstrações
+```
 
-Os textos (títulos, perguntas, planos) estão em [`index.html`](index.html); troque pelo que for verdade para o seu serviço.
+## Ver no computador
+Na pasta `site`: `python -m http.server 5500` e abra http://localhost:5500
+(ou abra o `index.html` com duplo clique).
 
-## Antes de publicar, confira
-- O prazo e os preços são os que você realmente cumpre.
-- Não existem depoimentos, números ou clientes inventados. Os modelos da seção "Modelos" estão marcados como demonstração. Quando tiver trabalhos reais (com autorização do cliente), troque os modelos por eles.
-- O WhatsApp abre com o número correto (teste no celular).
+## Trocar contato e mensagens
+Edite só [`js/config.js`](js/config.js). Cada botão de WhatsApp abre uma mensagem diferente
+(orçamento, cada serviço, portfólio, contato).
 
-## Testar localmente
-Abra `index.html` no navegador, ou na pasta `site`: `python -m http.server 5500` e acesse http://localhost:5500.
+## Projetos demonstrativos
+São **conceituais, com marcas e dados fictícios**, e dizem isso na página. Não os apresente como trabalhos de clientes.
+Os formulários deles não enviam nada; só mostram uma resposta de exemplo.
+
+## Imagens do portfólio
+As imagens em `assets/images/` são capturas das demonstrações. Para refazê-las depois de mudar uma demo:
+`cd ../marca && python build.py telas` (precisa de Chrome e do Pillow: `pip install pillow`).
+
+## Acessibilidade e desempenho
+Respeita `prefers-reduced-motion`, tem foco visível, menu acessível por teclado (Esc fecha), textos alternativos nas imagens,
+fontes hospedadas no próprio site e imagens em WebP com `width`/`height` definidos.
 
 ## Publicar de graça
-Netlify, Cloudflare Pages ou Vercel: envie a pasta `site/` (sem build). Depois aponte o seu domínio próprio.
+Arraste a pasta `site/` em **netlify.com/drop** (ou Cloudflare Pages / Vercel, sem build). Depois aponte o seu domínio.
 
 ## Privacidade (LGPD)
-O formulário só monta a mensagem e abre o WhatsApp do visitante. O site não coleta, guarda nem envia dados, e não usa cookies nem rastreadores. Se você adicionar Google Analytics, pixel ou outro rastreador, será preciso aviso de cookies e política de privacidade.
+O site não coleta nem envia dados e não usa cookies. Os botões só abrem o WhatsApp, o e-mail ou o Instagram do visitante.
+Se você adicionar Google Analytics, pixel ou outro rastreador, será preciso aviso de cookies e política de privacidade.

@@ -310,7 +310,7 @@ def build_telas() -> None:
     """
     demos = ROOT.parent / "site" / "projetos"
     for k in PROJECTS:
-        page_ = demos / k / "index.html"
+        page_ = (demos / k / "index.html").resolve().as_uri() + "?shot"  # ?shot esconde a faixa de aviso nas capturas
         JOBS.append((page_, OUT / "telas" / f"{k}-desktop.png", 1440, 1500, 1.0, None))
         JOBS.append((page_, OUT / "telas" / f"{k}-mobile.png", 390, 1700, 2.0, None))
         JOBS.append((page_, SRC / "_site" / f"{k}-desktop.png", 1440, 900, 1.0, None))

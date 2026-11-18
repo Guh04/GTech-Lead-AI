@@ -19,9 +19,8 @@ Tudo aqui é gerado por código a partir de [`build.py`](build.py), então dá p
 
 Bio, nome do perfil e legendas: [`instagram-bio.md`](instagram-bio.md).
 
-## Projetos demonstrativos (`demos/`)
-Quatro sites HTML/CSS (sem build), abra o `index.html` no navegador:
-`clinica` · `advocacia` · `estetica` · `servicos`.
+## Projetos demonstrativos (`../site/projetos/`)
+Quatro sites HTML/CSS/JS navegáveis, que também são o portfólio do site: `clinica` · `advocacia` · `estetica` · `servicos`.
 São **projetos conceituais com marcas fictícias** (Clínica Lumen, Nobre & Lacerda, Atelier Seiva, Prumo). Todos trazem o aviso no rodapé e não usam depoimentos, números ou fotos de terceiros.
 
 ## Sistema de marca (resumo)
@@ -39,4 +38,4 @@ Precisa de Chrome instalado e internet (Google Fonts). Os HTML intermediários f
 ## Observações
 - Os logos horizontais em PNG usam as fontes carregadas na renderização. Para uso em documentos, prefira os PNGs; o SVG vetorial é só o símbolo.
 - No preview do perfil, `wa.me/seunumero` é um espaço reservado: troque pelo seu número.
-- Para publicar os sites demonstrativos, arraste a pasta de cada um no Netlify Drop (netlify.com/drop).
+- `python build.py telas` também atualiza as imagens WebP do site em `../site/assets/images/`.

@@ -14,10 +14,14 @@ CHROME = next((p for p in (
 ) if Path(p).exists()), None)
 
 
+def _url(html) -> str:
+    return html if isinstance(html, str) else html.resolve().as_uri()
+
+
 MIN_WINDOW = 520  # o Chrome em modo headless não cria janelas muito estreitas
 
 
-def shot(html: Path, png: Path, width: int, height: int, scale: float = 1.0, bg: str | None = None) -> None:
+def shot(html, png: Path, width: int, height: int, scale: float = 1.0, bg: str | None = None) -> None:
     """Captura a página. Para larguras de celular, renderiza num <iframe> com a largura exata
     (assim os media queries respondem à largura real) e corta o excedente depois."""
     if width < MIN_WINDOW:
@@ -25,7 +29,7 @@ def shot(html: Path, png: Path, width: int, height: int, scale: float = 1.0, bg:
         wrapper = Path(tempfile.mkdtemp()) / "m.html"
         wrapper.write_text(
             f'<!doctype html><meta charset="utf-8"><style>html,body{{margin:0;background:#fff}}iframe{{display:block;border:0;width:{width}px;height:{height}px}}</style>'
-            f'<iframe src="{html.resolve().as_uri()}"></iframe>', encoding="utf-8")
+            f'<iframe src="{_url(html)}"></iframe>', encoding="utf-8")
         shot(wrapper, png, MIN_WINDOW, height, scale, bg)
         img = Image.open(png.resolve())
         img.crop((0, 0, round(width * scale), round(height * scale))).save(png.resolve())
@@ -39,7 +43,7 @@ def shot(html: Path, png: Path, width: int, height: int, scale: float = 1.0, bg:
             CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", f"--user-data-dir={profile}",
             f"--window-size={width},{height}", f"--force-device-scale-factor={scale}",
             "--virtual-time-budget=9000", *([f"--default-background-color={bg}"] if bg else []),
-            f"--screenshot={png}", html.resolve().as_uri(),
+            f"--screenshot={png}", _url(html),
         ], check=True, capture_output=True, timeout=120)
 
 

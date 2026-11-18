@@ -1,5 +1,8 @@
 /* Comportamento compartilhado pelos 4 sites demonstrativos (JavaScript puro). */
 (() => {
+  // ?shot: usado só para gerar as imagens do portfólio (esconde a faixa de aviso).
+  if (location.search === '?shot') document.querySelector('.demobar')?.remove();
+
   // Menu responsivo
   const btn = document.querySelector('.mb');
   const nav = document.querySelector('.links');
