@@ -214,12 +214,12 @@ class FakeSupabase:
             result = str(cell) in arg.strip("()").split(",")
         elif op == "is":
             result = cell is None if arg == "null" else str(cell).lower() == arg.lower()
-        elif op in ("gte", "lte"):
+        elif op in ("gte", "lte", "lt"):
             if cell is None:
                 result = False
             elif column.endswith("_at"):
                 a, b = _dt(cell), _dt(arg)
-                result = a >= b if op == "gte" else a <= b
+                result = a >= b if op == "gte" else a <= b if op == "lte" else a < b
             else:
                 result = cell >= arg if op == "gte" else cell <= arg
         else:
