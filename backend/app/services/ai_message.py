@@ -51,7 +51,8 @@ def facts(lead: dict, settings: Settings) -> str:
 
 def template_message(lead: dict, settings: Settings) -> str:
     sender = settings.outreach_sender_name.strip()
-    who = f"{sender} da {settings.outreach_sender_company}" if sender else f"da {settings.outreach_sender_company}"
+    company = settings.outreach_sender_company
+    who = f"Aqui é {sender} da {company}" if sender else f"Sou da {company}"
     hook = {
         "none": "e vi que vocês ainda não têm site",
         "site_only": "e vi que dá pra turbinar o site de vocês",
