@@ -10,6 +10,7 @@ export const ROUTES = {
   oportunidades: { title: 'Oportunidades' },
   pipeline: { title: 'Pipeline comercial' },
   prospeccao: { title: 'Prospecção' },
+  abordagem: { title: 'Abordagem' },
   relatorios: { title: 'Relatórios' },
 };
 const DEFAULT_ROUTE = 'dashboard';
