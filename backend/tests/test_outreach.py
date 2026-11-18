@@ -125,9 +125,6 @@ def test_daily_limit_blocks_sending_and_generating(make_client, ana):
 
     blocked = generate(c, ana)
     assert blocked.status_code == 409 and blocked.json()["error"]["code"] == "daily_limit_reached"
-    # Mesmo aprovada, uma terceira mensagem não pode ser enviada.
-    third = c.post("/api/leads", json=lead(company_name="Extra", city="Q", whatsapp="11955554444"), headers=ana).json()["id"]
-    assert third
 
 
 def test_limit_applies_even_for_manually_queued_extra_message(make_client, ana, fake):
