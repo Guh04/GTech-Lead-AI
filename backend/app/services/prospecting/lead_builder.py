@@ -77,15 +77,18 @@ async def build_lead(
         return None
 
     # Dados do provedor têm prioridade; o que veio do site só preenche o que está vazio.
-    whatsapp = _safe(n.normalize_phone, whatsapp) or _safe(n.normalize_phone, found.get("whatsapp"))
+    from_site: list[str] = []
+    wa_provider, wa_site = _safe(n.normalize_phone, whatsapp), _safe(n.normalize_phone, found.get("whatsapp"))
+    whatsapp = wa_provider or wa_site
+    if wa_site and not wa_provider:
+        from_site.append("WhatsApp")
     phone = _safe(n.normalize_phone, phone) or _safe(n.normalize_phone, found.get("phone"))
-    from_site = [label for key, label, had in (
-        ("whatsapp", "WhatsApp", bool(whatsapp) and whatsapp == _safe(n.normalize_phone, found.get("whatsapp"))),
-        ("instagram", "Instagram", not instagram and bool(found.get("instagram"))),
-        ("facebook", "Facebook", not facebook and bool(found.get("facebook"))),
-    ) if had and found.get(key)]
-    instagram = instagram or _safe(n.normalize_instagram, found.get("instagram"))
-    facebook = facebook or _safe(n.normalize_facebook, found.get("facebook"))
+    if not instagram and (ig := _safe(n.normalize_instagram, found.get("instagram"))):
+        instagram = ig
+        from_site.append("Instagram")
+    if not facebook and (fb := _safe(n.normalize_facebook, found.get("facebook"))):
+        facebook = fb
+        from_site.append("Facebook")
 
     notes = [f"Encontrado via {origin}. Landing page: {landing.value} ({reason})."]
     if from_site:
