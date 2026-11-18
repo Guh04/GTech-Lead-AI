@@ -10,7 +10,7 @@ from tests.conftest import lead
 def make_leads(client, ana, n=3, **extra):
     ids = []
     for i in range(n):
-        r = client.post("/api/leads", json=lead(company_name=f"Empresa {i}", city=f"Cidade {i}", whatsapp=f"1199999000{i}", **extra), headers=ana)
+        r = client.post("/api/leads", json=lead(company_name=f"Empresa {i}", city=f"Cidade {i}", whatsapp=f"1199999000{i}", **{"landing_page_status": "none", **extra}), headers=ana)
         assert r.status_code == 201, r.text
         ids.append(r.json()["id"])
     return ids
@@ -347,3 +347,19 @@ def test_whatsmcp_daily_limit_still_applies(make_client, ana, fake):
     assert approve_and_send(c, ana, mids[0]).status_code == 200
     assert generate(c, ana).status_code == 409
     assert len(fake.whatsmcp_calls) == 1
+
+
+def test_generate_only_targets_leads_without_site_or_landing_page(client, ana):
+    make_leads(client, ana, 1)  # sem site nem landing page (landing_page_status=none)
+    for name, extra in [
+        ("Com Landing", {"landing_page_status": "has_landing", "website": "https://a.example"}),
+        ("So Site", {"landing_page_status": "site_only", "website": "https://b.example"}),
+        ("Site Desconhecido", {"landing_page_status": "unknown", "website": "https://c.example"}),
+        ("Status none mas com site", {"landing_page_status": "none", "website": "https://d.example"}),
+    ]:
+        r = client.post("/api/leads", json=lead(company_name=name, city="Z", whatsapp=f"119555544{len(name):02d}", **extra), headers=ana)
+        assert r.status_code == 201, r.text
+    res = generate(client, ana).json()
+    assert res["created"] == 1 and res["items"][0]["lead_id"]
+    names = {m["lead"]["company_name"] for m in client.get("/api/outreach", headers=ana).json()}
+    assert names == {"Empresa 0"}

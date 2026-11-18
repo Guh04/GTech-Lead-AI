@@ -101,7 +101,7 @@ export async function mount(view) {
       toast(
         res.created
           ? `${res.created} mensagem(ns) preparada(s) para aprovação.`
-          : 'Nenhum lead elegível (precisa ter WhatsApp, não estar em “não contatar” e ainda não ter mensagem).',
+          : 'Nenhum lead elegível (precisa ter WhatsApp, não ter site nem landing page, não estar em “não contatar” e ainda não ter mensagem).',
         res.created ? 'success' : 'info',
       );
       tab = 'draft';

@@ -43,7 +43,7 @@ def test_cleanup_keeps_today_and_protects_progress_and_opt_out(client, ana, fake
 
 
 def test_cleanup_also_removes_history_and_queue_of_deleted_leads(client, ana, fake):
-    old = make(client, ana, fake, "Antigo", days_ago=2, whatsapp="11999990000")
+    old = make(client, ana, fake, "Antigo", days_ago=2, whatsapp="11999990000", landing_page_status="none")
     client.post("/api/outreach/generate", json={"count": 5}, headers=ana)
     assert fake.rows["outreach_messages"] and fake.rows["lead_activities"]
     client.post("/api/leads/cleanup", headers=ana)
