@@ -105,7 +105,10 @@ class OutreachService:
             raise AppError(409, "queue_full", "Você já tem mensagens pendentes suficientes para o limite de hoje. Aprove, envie ou descarte as pendentes antes de gerar mais.")
         count = min(count, room)
 
-        already = {r["lead_id"] for r in await self.db.select_all("outreach_messages", columns="lead_id")}
+        # Fora só quem já tem mensagem pendente ou já enviada. Descartadas voltam a ser elegíveis (descartar
+        # serve para refazer o texto); quem não deve ser contatado deve ficar marcado como "não contatar".
+        busy = f"in.({OutreachStatus.DRAFT.value},{OutreachStatus.APPROVED.value},{OutreachStatus.SENT.value})"
+        already = {r["lead_id"] for r in await self.db.select_all("outreach_messages", columns="lead_id", filters=[("status", busy)])}
         filters = [
             ("whatsapp", "not.is.null"),
             ("do_not_contact", "eq.false"),
