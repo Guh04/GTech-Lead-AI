@@ -17,8 +17,8 @@ import httpx
 SUPABASE_URL = "https://fake-project.supabase.co"
 ANON_KEY = "anon-key-for-tests"
 
-TABLES = ("leads", "lead_activities", "prospecting_searches", "users")
-OWNED = ("leads", "lead_activities", "prospecting_searches")
+TABLES = ("leads", "lead_activities", "prospecting_searches", "users", "outreach_messages")
+OWNED = ("leads", "lead_activities", "prospecting_searches", "outreach_messages")
 
 
 def _now() -> str:

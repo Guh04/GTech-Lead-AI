@@ -219,3 +219,29 @@ create index if not exists idx_activities_lead_created
   on public.lead_activities (lead_id, created_at desc);
 create index if not exists idx_activities_owner_created
   on public.lead_activities (owner_id, created_at desc);
+
+
+-- -----------------------------------------------------------------------------
+-- outreach_messages: fila de abordagem por WhatsApp (a IA prepara, o usuário aprova e envia)
+-- -----------------------------------------------------------------------------
+create table if not exists public.outreach_messages (
+  id           uuid primary key default gen_random_uuid(),
+  owner_id     uuid not null default auth.uid() references public.users (id) on delete cascade,
+  lead_id      uuid not null references public.leads (id) on delete cascade,
+  body         text not null check (char_length(btrim(body)) between 1 and 1000),
+  status       text not null default 'draft'
+                 check (status in ('draft', 'approved', 'sent', 'skipped')),
+  source       text not null default 'template' check (source in ('ai', 'template')),
+  created_at   timestamptz not null default now(),
+  approved_at  timestamptz,
+  sent_at      timestamptz
+);
+
+-- No máximo uma mensagem pendente (rascunho/aprovada) por lead.
+create unique index if not exists uq_outreach_open_per_lead
+  on public.outreach_messages (lead_id) where status in ('draft', 'approved');
+create index if not exists idx_outreach_owner_status
+  on public.outreach_messages (owner_id, status, created_at desc);
+-- Contagem de envios do dia (limite diário).
+create index if not exists idx_outreach_owner_sent
+  on public.outreach_messages (owner_id, sent_at desc) where status = 'sent';

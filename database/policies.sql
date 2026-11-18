@@ -96,3 +96,36 @@ create policy "searches_update_own" on public.prospecting_searches
   for update to authenticated
   using (owner_id = (select auth.uid()))
   with check (owner_id = (select auth.uid()));
+
+-- ------------------------------------------------------ outreach_messages ------
+alter table public.outreach_messages enable row level security;
+revoke all on public.outreach_messages from anon;
+grant select, insert, update, delete on public.outreach_messages to authenticated;
+
+drop policy if exists "outreach_select_own" on public.outreach_messages;
+create policy "outreach_select_own" on public.outreach_messages
+  for select to authenticated
+  using (owner_id = (select auth.uid()));
+
+-- Só é possível criar mensagem para um lead que pertence ao próprio usuário.
+drop policy if exists "outreach_insert_own" on public.outreach_messages;
+create policy "outreach_insert_own" on public.outreach_messages
+  for insert to authenticated
+  with check (
+    owner_id = (select auth.uid())
+    and exists (
+      select 1 from public.leads l
+      where l.id = lead_id and l.owner_id = (select auth.uid())
+    )
+  );
+
+drop policy if exists "outreach_update_own" on public.outreach_messages;
+create policy "outreach_update_own" on public.outreach_messages
+  for update to authenticated
+  using (owner_id = (select auth.uid()))
+  with check (owner_id = (select auth.uid()));
+
+drop policy if exists "outreach_delete_own" on public.outreach_messages;
+create policy "outreach_delete_own" on public.outreach_messages
+  for delete to authenticated
+  using (owner_id = (select auth.uid()));
