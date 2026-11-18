@@ -77,6 +77,8 @@ class FakeSupabase:
             return self.nominatim_handler(request)
         if url.hostname in ("overpass-api.de", "overpass.kumi.systems"):
             return self.overpass_handler(request)
+        if url.hostname == "api.whatsmcp.com":
+            return self.whatsmcp_handler(request)
         if url.hostname == "api.anthropic.com":
             return self.anthropic_handler(request)
         if url.hostname == "places.googleapis.com":
