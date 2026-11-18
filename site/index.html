@@ -2,24 +2,64 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>GTech Digital Studio | Criação de sites e landing pages profissionais</title>
-<meta name="description" content="Estúdio de web design especializado em landing pages, sites institucionais e sites comerciais para empresas. Peça seu orçamento pelo WhatsApp.">
+<meta name="description" content="Estúdio de web design em Sorocaba/SP, especializado em landing pages, sites institucionais e sites comerciais para empresas. Veja os projetos e peça seu orçamento pelo WhatsApp.">
+<meta name="author" content="GTech Digital Studio">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="theme-color" content="#0A0C10">
+<link rel="canonical" href="__SITE_URL__/">
+
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="GTech Digital Studio">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="__SITE_URL__/">
 <meta property="og:title" content="GTech Digital Studio | Sites e landing pages profissionais">
 <meta property="og:description" content="Seu negócio merece uma presença digital à altura. Conheça nossos projetos e peça um orçamento.">
-<meta property="og:locale" content="pt_BR">
+<meta property="og:image" content="__SITE_URL__/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GTech Digital Studio: criação de sites e landing pages profissionais">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GTech Digital Studio | Sites e landing pages profissionais">
+<meta name="twitter:description" content="Seu negócio merece uma presença digital à altura. Conheça nossos projetos e peça um orçamento.">
+<meta name="twitter:image" content="__SITE_URL__/assets/og-image.png">
+
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/instrument-serif-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/inter-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="assets/images/clinica-desktop-tall.webp" fetchpriority="high">
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/style.css">
 <script>document.documentElement.classList.add('js');</script>
-<noscript><style>.rv,.hero .enter{opacity:1!important;transform:none!important}.step{opacity:1!important}</style></noscript>
+<noscript><style>.rv,.hero .enter{opacity:1!important;transform:none!important}.step{opacity:1!important}.hero h1 .wi{transform:none!important}</style></noscript>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "GTech Digital Studio",
+  "description": "Estúdio de web design especializado em landing pages, sites institucionais e sites comerciais para empresas.",
+  "url": "__SITE_URL__/",
+  "image": "__SITE_URL__/assets/og-image.png",
+  "email": "contato.gtechsuporte@gmail.com",
+  "telephone": "+55 15 99681-8922",
+  "address": {"@type": "PostalAddress", "addressLocality": "Sorocaba", "addressRegion": "SP", "addressCountry": "BR"},
+  "areaServed": "BR",
+  "sameAs": ["https://instagram.com/gtech_suporte"],
+  "makesOffer": [
+    {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Landing pages"}},
+    {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Sites institucionais"}},
+    {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Sites comerciais"}},
+    {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Redesign de sites"}}
+  ]
+}
+</script>
 </head>
 <body>
 <a class="skip" href="#projetos">Ir para o conteúdo</a>
+<div class="progress" aria-hidden="true"><i></i></div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="g" viewBox="10 11 84 84"><path d="M76 28H22V78H82V54H54" fill="none" stroke="currentColor" stroke-width="12" stroke-linejoin="miter"/><rect x="76" y="22" width="12" height="12" fill="#1D4DFF"/></symbol>
@@ -43,45 +83,58 @@
   <nav aria-label="Menu móvel">
     <a href="#projetos">Projetos</a><a href="#servicos">Serviços</a><a href="#processo">Processo</a><a href="#diferenciais">Diferenciais</a><a href="#contato">Contato</a>
   </nav>
-  <a class="btn btn-primary" data-wa="orcamento" href="https://wa.me/5515996818922">Solicitar orçamento <span class="arr" aria-hidden="true">→</span></a>
+  <div class="drawer-foot">
+    <a class="btn btn-primary" data-wa="orcamento" href="https://wa.me/5515996818922">Solicitar orçamento <span class="arr" aria-hidden="true">→</span></a>
+    <p><a data-ig href="https://instagram.com/gtech_suporte">Instagram</a> · <a data-mail href="mailto:contato.gtechsuporte@gmail.com">E-mail</a></p>
+  </div>
 </div>
 
 <main id="topo">
 
 <!-- 1 · HERO -->
-<section class="hero dark">
+<section class="hero dark" data-hero>
   <div class="wrap grid">
-    <div>
-      <span class="eyebrow enter" style="--d:.1s">Estúdio de web design</span>
-      <h1 class="serif enter" style="--d:.22s">Seu negócio merece uma presença digital <em>à altura.</em></h1>
-      <p class="lead enter" style="--d:.36s">Criamos sites e landing pages estratégicos para empresas que desejam fortalecer sua marca, apresentar seus serviços e conquistar novas oportunidades.</p>
-      <div class="actions enter" style="--d:.5s">
+    <div class="copy">
+      <span class="eyebrow enter" style="--d:.05s">Estúdio de web design</span>
+      <h1 class="serif">Seu negócio merece uma presença digital <em>à altura.</em></h1>
+      <p class="lead enter" style="--d:.7s">Criamos sites e landing pages estratégicos para empresas que desejam fortalecer sua marca, apresentar seus serviços e conquistar novas oportunidades.</p>
+      <div class="actions enter" style="--d:.85s">
         <a class="btn btn-primary" href="#projetos">Conheça nossos projetos <span class="arr" aria-hidden="true">→</span></a>
         <a class="btn btn-ghost" data-wa="orcamento" href="https://wa.me/5515996818922">Solicite um orçamento</a>
       </div>
-      <ul class="chips enter" style="--d:.64s" aria-label="O que criamos"><li>Landing pages</li><li>Sites institucionais</li><li>Sites comerciais</li><li>Redesign</li></ul>
     </div>
 
-    <div class="stage enter" style="--d:.4s" aria-label="Exemplos de sites desenvolvidos, em computador e celular">
+    <div class="stage enter" style="--d:.3s" data-stage aria-label="Exemplos de sites desenvolvidos, em computador e celular">
+      <span class="glow" aria-hidden="true"></span>
       <div class="laptop">
         <div class="scr"><div class="view" data-rotate>
-          <img class="on" src="assets/images/clinica-desktop.webp" data-name="Clínica médica" width="1440" height="900" alt="Landing page conceitual de clínica médica no computador">
-          <img src="assets/images/advocacia-desktop.webp" data-name="Escritório de advocacia" width="1440" height="900" alt="Site conceitual de escritório de advocacia no computador" loading="lazy">
-          <img src="assets/images/estetica-desktop.webp" data-name="Clínica de estética" width="1440" height="900" alt="Landing page conceitual de clínica de estética no computador" loading="lazy">
-          <img src="assets/images/servicos-desktop.webp" data-name="Empresa de serviços" width="1440" height="900" alt="Site conceitual de empresa de serviços no computador" loading="lazy">
+          <img class="on" src="assets/images/clinica-desktop-tall.webp" data-name="Clínica médica" width="1440" height="2400" fetchpriority="high" decoding="async" alt="Landing page conceitual de clínica médica no computador">
+          <img src="assets/images/advocacia-desktop-tall.webp" data-name="Escritório de advocacia" width="1440" height="2400" loading="lazy" decoding="async" alt="Site conceitual de escritório de advocacia no computador">
+          <img src="assets/images/estetica-desktop-tall.webp" data-name="Clínica de estética" width="1440" height="2400" loading="lazy" decoding="async" alt="Landing page conceitual de clínica de estética no computador">
+          <img src="assets/images/servicos-desktop-tall.webp" data-name="Empresa de serviços" width="1440" height="2400" loading="lazy" decoding="async" alt="Site conceitual de empresa de serviços no computador">
         </div></div>
         <div class="base"></div>
       </div>
       <div class="phone"><div class="view" data-rotate>
-        <img class="on" src="assets/images/clinica-mobile.webp" data-name="Clínica médica" width="780" height="1688" alt="Landing page conceitual de clínica médica no celular">
-        <img src="assets/images/advocacia-mobile.webp" data-name="Escritório de advocacia" width="780" height="1688" alt="Site conceitual de escritório de advocacia no celular" loading="lazy">
-        <img src="assets/images/estetica-mobile.webp" data-name="Clínica de estética" width="780" height="1688" alt="Landing page conceitual de clínica de estética no celular" loading="lazy">
-        <img src="assets/images/servicos-mobile.webp" data-name="Empresa de serviços" width="780" height="1688" alt="Site conceitual de empresa de serviços no celular" loading="lazy">
+        <img class="on" src="assets/images/clinica-mobile-tall.webp" data-name="Clínica médica" width="780" height="4200" decoding="async" alt="Landing page conceitual de clínica médica no celular">
+        <img src="assets/images/advocacia-mobile-tall.webp" data-name="Escritório de advocacia" width="780" height="4200" loading="lazy" decoding="async" alt="Site conceitual de escritório de advocacia no celular">
+        <img src="assets/images/estetica-mobile-tall.webp" data-name="Clínica de estética" width="780" height="4200" loading="lazy" decoding="async" alt="Landing page conceitual de clínica de estética no celular">
+        <img src="assets/images/servicos-mobile-tall.webp" data-name="Empresa de serviços" width="780" height="4200" loading="lazy" decoding="async" alt="Site conceitual de empresa de serviços no celular">
       </div></div>
+      <span class="pill p1" aria-hidden="true"><i></i>Desktop</span>
+      <span class="pill p2" aria-hidden="true"><i></i>Mobile</span>
       <p class="tag">Projeto conceitual · <b data-rotate-label>Clínica médica</b></p>
     </div>
   </div>
 </section>
+
+<!-- faixa de serviços em movimento -->
+<div class="marquee dark" aria-hidden="true">
+  <div class="track">
+    <span>Landing pages</span><i></i><span>Sites institucionais</span><i></i><span>Sites comerciais</span><i></i><span>Redesign de sites</span><i></i><span>Design responsivo</span><i></i>
+    <span>Landing pages</span><i></i><span>Sites institucionais</span><i></i><span>Sites comerciais</span><i></i><span>Redesign de sites</span><i></i><span>Design responsivo</span><i></i>
+  </div>
+</div>
 
 <!-- 2 · PROJETOS -->
 <section class="section off" id="projetos">
@@ -93,48 +146,64 @@
     </div>
 
     <div class="work-grid">
-      <a class="card rv" href="projetos/clinica/index.html" style="--c1:#E8F3F7;--c2:#D3E7EF;--ct:#0f2433">
+      <a class="card rv" data-tilt href="projetos/clinica/index.html" style="--c1:#E8F3F7;--c2:#D3E7EF;--ct:#0f2433" aria-label="Ver projeto Clínica Lumen, clínica médica">
         <span class="more">Ver projeto</span>
         <div class="shot">
-          <div class="dt"><div class="bar"><i></i><i></i><i></i></div><img src="assets/images/clinica-desktop.webp" width="1440" height="900" loading="lazy" alt="Tela inicial do site da Clínica Lumen no computador"></div>
-          <div class="ph"><img src="assets/images/clinica-mobile.webp" width="780" height="1688" loading="lazy" alt="Site da Clínica Lumen no celular"></div>
+          <div class="dt"><div class="bar"><i></i><i></i><i></i></div><img src="assets/images/clinica-desktop.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Tela inicial do site da Clínica Lumen no computador"></div>
+          <div class="ph"><img src="assets/images/clinica-mobile.webp" width="780" height="1688" loading="lazy" decoding="async" alt="Site da Clínica Lumen no celular"></div>
         </div>
-        <div class="info"><span class="seg">Clínica médica</span><h3>Clínica Lumen</h3>
+        <div class="info">
+          <div class="meta"><span class="seg">Clínica médica</span><span class="idx">01 / 04</span></div>
+          <h3>Clínica Lumen</h3>
           <p>Landing page com agendamento de consultas, design clean e hierarquia clara das especialidades.</p>
-          <span class="go">Ver projeto <span class="arr" aria-hidden="true">→</span></span></div>
+          <ul class="tags"><li>Landing page</li><li>Agendamento</li><li>Mobile first</li></ul>
+          <div class="foot"><span class="sw" aria-hidden="true"><i style="background:#1F7A99"></i><i style="background:#E8F3F7"></i><i style="background:#0F2433"></i></span><span class="go">Ver projeto <span class="arr" aria-hidden="true">→</span></span></div>
+        </div>
       </a>
 
-      <a class="card rv" href="projetos/advocacia/index.html" style="--c1:#161a23;--c2:#0d1017;--ct:#f1ede4;--d:.1s">
+      <a class="card rv" data-tilt href="projetos/advocacia/index.html" style="--c1:#161a23;--c2:#0d1017;--ct:#f1ede4;--d:.1s" aria-label="Ver projeto Nobre e Lacerda, escritório de advocacia">
         <span class="more">Ver projeto</span>
         <div class="shot">
-          <div class="dt"><div class="bar"><i></i><i></i><i></i></div><img src="assets/images/advocacia-desktop.webp" width="1440" height="900" loading="lazy" alt="Tela inicial do site Nobre &amp; Lacerda no computador"></div>
-          <div class="ph"><img src="assets/images/advocacia-mobile.webp" width="780" height="1688" loading="lazy" alt="Site Nobre &amp; Lacerda no celular"></div>
+          <div class="dt"><div class="bar"><i></i><i></i><i></i></div><img src="assets/images/advocacia-desktop.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Tela inicial do site Nobre &amp; Lacerda no computador"></div>
+          <div class="ph"><img src="assets/images/advocacia-mobile.webp" width="780" height="1688" loading="lazy" decoding="async" alt="Site Nobre &amp; Lacerda no celular"></div>
         </div>
-        <div class="info"><span class="seg">Escritório de advocacia</span><h3>Nobre &amp; Lacerda</h3>
+        <div class="info">
+          <div class="meta"><span class="seg">Escritório de advocacia</span><span class="idx">02 / 04</span></div>
+          <h3>Nobre &amp; Lacerda</h3>
           <p>Site institucional corporativo, com tipografia elegante e áreas de atuação apresentadas com clareza.</p>
-          <span class="go">Ver projeto <span class="arr" aria-hidden="true">→</span></span></div>
+          <ul class="tags"><li>Site institucional</li><li>Tipografia editorial</li><li>Corporativo</li></ul>
+          <div class="foot"><span class="sw" aria-hidden="true"><i style="background:#C2A46A"></i><i style="background:#10131A"></i><i style="background:#F1EDE4"></i></span><span class="go">Ver projeto <span class="arr" aria-hidden="true">→</span></span></div>
+        </div>
       </a>
 
-      <a class="card rv" href="projetos/estetica/index.html" style="--c1:#EFE3DB;--c2:#E3CDC1;--ct:#2b211f">
+      <a class="card rv" data-tilt href="projetos/estetica/index.html" style="--c1:#EFE3DB;--c2:#E3CDC1;--ct:#2b211f" aria-label="Ver projeto Atelier Seiva, clínica de estética">
         <span class="more">Ver projeto</span>
         <div class="shot">
-          <div class="dt"><div class="bar"><i></i><i></i><i></i></div><img src="assets/images/estetica-desktop.webp" width="1440" height="900" loading="lazy" alt="Tela inicial do site Atelier Seiva no computador"></div>
-          <div class="ph"><img src="assets/images/estetica-mobile.webp" width="780" height="1688" loading="lazy" alt="Site Atelier Seiva no celular"></div>
+          <div class="dt"><div class="bar"><i></i><i></i><i></i></div><img src="assets/images/estetica-desktop.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Tela inicial do site Atelier Seiva no computador"></div>
+          <div class="ph"><img src="assets/images/estetica-mobile.webp" width="780" height="1688" loading="lazy" decoding="async" alt="Site Atelier Seiva no celular"></div>
         </div>
-        <div class="info"><span class="seg">Clínica de estética</span><h3>Atelier Seiva</h3>
+        <div class="info">
+          <div class="meta"><span class="seg">Clínica de estética</span><span class="idx">03 / 04</span></div>
+          <h3>Atelier Seiva</h3>
           <p>Landing page comercial com visual sofisticado, tratamentos em destaque e foco em agendamento.</p>
-          <span class="go">Ver projeto <span class="arr" aria-hidden="true">→</span></span></div>
+          <ul class="tags"><li>Landing page</li><li>Conversão</li><li>Visual sofisticado</li></ul>
+          <div class="foot"><span class="sw" aria-hidden="true"><i style="background:#B8736A"></i><i style="background:#EFE3DB"></i><i style="background:#2B211F"></i></span><span class="go">Ver projeto <span class="arr" aria-hidden="true">→</span></span></div>
+        </div>
       </a>
 
-      <a class="card rv" href="projetos/servicos/index.html" style="--c1:#0F1F3D;--c2:#162C55;--ct:#fff;--d:.1s">
+      <a class="card rv" data-tilt href="projetos/servicos/index.html" style="--c1:#0F1F3D;--c2:#162C55;--ct:#fff;--d:.1s" aria-label="Ver projeto Prumo Serviços Prediais, empresa de serviços">
         <span class="more">Ver projeto</span>
         <div class="shot">
-          <div class="dt"><div class="bar"><i></i><i></i><i></i></div><img src="assets/images/servicos-desktop.webp" width="1440" height="900" loading="lazy" alt="Tela inicial do site Prumo no computador"></div>
-          <div class="ph"><img src="assets/images/servicos-mobile.webp" width="780" height="1688" loading="lazy" alt="Site Prumo no celular"></div>
+          <div class="dt"><div class="bar"><i></i><i></i><i></i></div><img src="assets/images/servicos-desktop.webp" width="1440" height="900" loading="lazy" decoding="async" alt="Tela inicial do site Prumo no computador"></div>
+          <div class="ph"><img src="assets/images/servicos-mobile.webp" width="780" height="1688" loading="lazy" decoding="async" alt="Site Prumo no celular"></div>
         </div>
-        <div class="info"><span class="seg">Empresa de serviços</span><h3>Prumo Serviços Prediais</h3>
+        <div class="info">
+          <div class="meta"><span class="seg">Empresa de serviços</span><span class="idx">04 / 04</span></div>
+          <h3>Prumo Serviços Prediais</h3>
           <p>Site institucional com serviços apresentados de forma direta e botões de orçamento em todo o percurso.</p>
-          <span class="go">Ver projeto <span class="arr" aria-hidden="true">→</span></span></div>
+          <ul class="tags"><li>Site institucional</li><li>Orçamento</li><li>Responsivo</li></ul>
+          <div class="foot"><span class="sw" aria-hidden="true"><i style="background:#F59E0B"></i><i style="background:#0F1F3D"></i><i style="background:#F3F4F6"></i></span><span class="go">Ver projeto <span class="arr" aria-hidden="true">→</span></span></div>
+        </div>
       </a>
     </div>
 
@@ -220,7 +289,10 @@
     <div class="in rv">
       <h2>Vamos construir a presença digital da sua empresa?</h2>
       <p>Conte um pouco sobre seu negócio e descubra como podemos desenvolver um site alinhado aos seus objetivos.</p>
-      <a class="btn btn-light" data-wa="orcamento" href="https://wa.me/5515996818922">Solicitar orçamento <span class="arr" aria-hidden="true">→</span></a>
+      <div class="cta-actions">
+        <a class="btn btn-light" data-wa="orcamento" href="https://wa.me/5515996818922">Solicitar orçamento <span class="arr" aria-hidden="true">→</span></a>
+        <a class="mail" data-mail href="mailto:contato.gtechsuporte@gmail.com">ou escreva por e-mail</a>
+      </div>
     </div>
   </div>
 </section>
@@ -234,10 +306,11 @@
       <div>
         <a class="logo" href="#topo" aria-label="GTech Digital Studio, voltar ao topo"><svg class="sym" aria-hidden="true"><use href="#g"/></svg><span><b>GTech</b><small>Digital Studio</small></span></a>
         <p class="about">Estúdio especializado em sites e landing pages profissionais para empresas.</p>
+        <a class="totop" href="#topo">Voltar ao topo <span aria-hidden="true">↑</span></a>
       </div>
       <div>
         <h4>Navegação</h4>
-        <ul><li><a href="#projetos">Projetos</a></li><li><a href="#servicos">Serviços</a></li><li><a href="#processo">Processo</a></li><li><a href="#diferenciais">Diferenciais</a></li></ul>
+        <ul><li><a href="#projetos">Projetos</a></li><li><a href="#servicos">Serviços</a></li><li><a href="#processo">Processo</a></li><li><a href="#diferenciais">Diferenciais</a></li><li><a href="#contato">Contato</a></li></ul>
       </div>
       <div>
         <h4>Portfólio</h4>
@@ -249,12 +322,14 @@
           <li><a data-wa="contato" href="https://wa.me/5515996818922">WhatsApp: (15) 99681-8922</a></li>
           <li><a data-ig href="https://instagram.com/gtech_suporte">Instagram</a></li>
           <li><a data-mail href="mailto:contato.gtechsuporte@gmail.com">E-mail</a></li>
+          <li><span class="loc">Sorocaba/SP</span></li>
         </ul>
       </div>
     </div>
     <div class="bottom">
       <span>© <span data-year>2026</span> GTech Digital Studio. Todos os direitos reservados.</span>
       <span data-legal>GTech Digital Studio · CNPJ 68.265.338/0001-09 · Sorocaba/SP</span>
+      <a href="privacidade.html">Política de privacidade</a>
     </div>
   </div>
 </footer>

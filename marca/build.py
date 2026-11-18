@@ -315,6 +315,8 @@ def build_telas() -> None:
         JOBS.append((page_, OUT / "telas" / f"{k}-mobile.png", 390, 1700, 2.0, None))
         JOBS.append((page_, SRC / "_site" / f"{k}-desktop.png", 1440, 900, 1.0, None))
         JOBS.append((page_, SRC / "_site" / f"{k}-mobile.png", 390, 844, 2.0, None))
+        JOBS.append((page_, SRC / "_site" / f"{k}-desktop-tall.png", 1440, 2400, 1.0, None))
+        JOBS.append((page_, SRC / "_site" / f"{k}-mobile-tall.png", 390, 2100, 2.0, None))
 
 
 def to_webp() -> None:
@@ -323,12 +325,30 @@ def to_webp() -> None:
     dest = ROOT.parent / "site" / "assets" / "images"
     dest.mkdir(parents=True, exist_ok=True)
     for png in (SRC / "_site").glob("*.png"):
-        Image.open(png).convert("RGB").save(dest / (png.stem + ".webp"), "WEBP", quality=84, method=6)
+        Image.open(png).convert("RGB").save(dest / (png.stem + ".webp"), "WEBP", quality=(78 if "tall" in png.stem else 84), method=6)
         print("webp", (dest / (png.stem + ".webp")).name)
 
 
+def build_og() -> None:
+    """og-image (1200x630) para WhatsApp/Instagram/LinkedIn e ícones do site."""
+    site = ROOT.parent / "site"
+    body = (f'<div style="width:1200px;height:630px;background:{INK};position:relative;overflow:hidden;color:#fff">'
+            f'<div style="position:absolute;right:-70px;top:-70px;width:420px;height:420px;border:1px solid {GRAPHITE2}"></div>'
+            f'<div style="position:absolute;left:70px;top:62px">{lockup(WHITE, BLUE, 58)}</div>'
+            f'<div class="serif" style="position:absolute;left:70px;top:210px;width:600px;font-size:84px">Seu negócio merece uma presença digital <em style="color:#6F8CFF">à altura.</em></div>'
+            f'<div style="position:absolute;left:70px;bottom:56px;font-size:22px;color:#9AA0AC;letter-spacing:.02em">Criação de sites e landing pages profissionais</div>'
+            f'<div style="position:absolute;left:700px;top:150px;--w:520px">'
+            f'<div class="laptop sh" style="--w:520px;transform:perspective(1800px) rotateY(-9deg) rotateX(2deg)"><div class="scr"><div class="in"><img src="../../site/assets/images/clinica-desktop.webp"></div></div><div class="base"></div></div></div>'
+            f'<div style="position:absolute;left:1010px;top:300px"><div class="phone sh" style="--w:170px;transform:rotate(4deg)"><div class="in"><img src="../../site/assets/images/estetica-mobile.webp"></div></div></div></div>')
+    write("og.html", page(body, 1200, 630, INK))
+    icon = f'<div style="width:180px;height:180px;background:{INK};display:grid;place-items:center">{symbol(WHITE, BLUE, 118)}</div>'
+    write("icon.html", page(icon, 180, 180, INK))
+    JOBS.append((SRC / "og.html", site / "assets" / "og-image.png", 1200, 630, 1.0, None))
+    JOBS.append((SRC / "icon.html", site / "assets" / "icons" / "apple-touch-icon.png", 180, 180, 1.0, None))
+
+
 STEPS = {"telas": build_telas, "logos": build_logos, "destaques": build_destaques, "posts": build_posts,
-         "apresentacoes": build_presentations, "manual": build_manual, "feed": build_feed}
+         "apresentacoes": build_presentations, "manual": build_manual, "og": build_og, "feed": build_feed}
 
 if __name__ == "__main__":
     SRC.mkdir(exist_ok=True)
