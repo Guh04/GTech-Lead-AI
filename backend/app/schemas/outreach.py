@@ -45,3 +45,4 @@ class OutreachStatusOut(BaseModel):
     min_interval_seconds: int
     wait_seconds: int  # tempo até o próximo envio liberado (0 = pode enviar agora)
     ai_configured: bool
+    auto_send: bool = False  # True = o sistema envia pelo WhatsMCP; False = abre o link wa.me
