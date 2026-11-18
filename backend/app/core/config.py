@@ -41,6 +41,18 @@ class Settings(BaseSettings):
     osm_retry_delay_seconds: float = 3.0
     osm_timeout_seconds: float = 60.0
 
+    # Abordagem por WhatsApp: a IA escreve, o usuário aprova e envia (nada é enviado sozinho).
+    anthropic_api_key: str = ""  # vazio = mensagens geradas por texto-modelo, sem IA
+    outreach_model: str = "claude-haiku-5-5"
+    outreach_timeout_seconds: float = 30.0
+    # Proteção do número: limite de envios por dia e intervalo mínimo entre dois envios.
+    outreach_daily_limit: int = Field(20, ge=1, le=1000)
+    outreach_min_interval_seconds: int = Field(45, ge=0, le=3600)
+    # Dados usados na assinatura/oferta das mensagens.
+    outreach_sender_name: str = ""
+    outreach_sender_company: str = "GTech"
+    outreach_offer: str = "criação de landing pages profissionais para atrair mais clientes"
+
     @property
     def supabase_configured(self) -> bool:
         return self.supabase_url.startswith(("http://", "https://")) and bool(self.supabase_anon_key.strip())
