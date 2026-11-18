@@ -10,6 +10,7 @@ export const ROUTES = {
   oportunidades: { title: 'Oportunidades' },
   pipeline: { title: 'Pipeline comercial' },
   prospeccao: { title: 'Prospecção' },
+  contatos: { title: 'Contatos' },
   abordagem: { title: 'Abordagem' },
   relatorios: { title: 'Relatórios' },
 };
