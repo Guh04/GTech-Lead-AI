@@ -19,17 +19,29 @@ def lead_service(user: AuthUser = Depends(current_user), db: Database = Depends(
     return LeadService(db, user.id)
 
 
+def _timezone(settings: Settings) -> ZoneInfo:
+    try:
+        return ZoneInfo(settings.app_timezone)
+    except ZoneInfoNotFoundError:
+        log.warning("APP_TIMEZONE inválido (%s); usando UTC.", settings.app_timezone)
+        return ZoneInfo("UTC")
+
+
 def analytics_service(
     user: AuthUser = Depends(current_user),
     db: Database = Depends(get_db),
     settings: Settings = Depends(require_supabase),
 ) -> AnalyticsService:
-    try:
-        tz = ZoneInfo(settings.app_timezone)
-    except ZoneInfoNotFoundError:
-        log.warning("APP_TIMEZONE inválido (%s); usando UTC.", settings.app_timezone)
-        tz = ZoneInfo("UTC")
-    return AnalyticsService(db, user.id, tz)
+    return AnalyticsService(db, user.id, _timezone(settings))
+
+
+def outreach_service(
+    user: AuthUser = Depends(current_user),
+    db: Database = Depends(get_db),
+    settings: Settings = Depends(require_supabase),
+    http: httpx.AsyncClient = Depends(get_http),
+) -> OutreachService:
+    return OutreachService(db, user.id, settings, http, _timezone(settings))
 
 
 def prospecting_service(
