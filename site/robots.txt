@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /projetos/
 
-Sitemap: __SITE_URL__/sitemap.xml
+Sitemap: https://gtechdigitalstudio.gustavomartha22.workers.dev/sitemap.xml
