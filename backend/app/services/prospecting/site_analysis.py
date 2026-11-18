@@ -264,13 +264,21 @@ async def fetch_page(http: httpx.AsyncClient, url: str) -> Fetch | None:
     return None
 
 
-async def analyze_website(http: httpx.AsyncClient, url: str) -> tuple[LandingStatus, str]:
-    """Classifica o site de uma empresa. Em caso de dúvida, devolve 'unknown' (nunca inventa)."""
+async def analyze_website_full(http: httpx.AsyncClient, url: str) -> tuple[LandingStatus, str, dict[str, str]]:
+    """Classifica o site e também devolve os contatos publicados nele. Em dúvida, 'unknown' (nunca inventa)."""
     page = await fetch_page(http, url)
     if page is None:
-        return LandingStatus.UNKNOWN, "site não acessível a partir do servidor"
+        return LandingStatus.UNKNOWN, "site não acessível a partir do servidor", {}
     if page.status >= 400:
-        return LandingStatus.UNKNOWN, f"site respondeu com erro HTTP {page.status}"
+        return LandingStatus.UNKNOWN, f"site respondeu com erro HTTP {page.status}", {}
     if "html" not in page.content_type and "<html" not in page.text[:2000].lower():
-        return LandingStatus.UNKNOWN, "o endereço não retornou uma página HTML"
-    return classify_html(page.text)
+        return LandingStatus.UNKNOWN, "o endereço não retornou uma página HTML", {}
+    parser = _parse(page.text)
+    status, reason = _classify(parser)
+    return status, reason, extract_contacts(parser.hrefs)
+
+
+async def analyze_website(http: httpx.AsyncClient, url: str) -> tuple[LandingStatus, str]:
+    """Classifica o site de uma empresa. Em caso de dúvida, devolve 'unknown' (nunca inventa)."""
+    status, reason, _ = await analyze_website_full(http, url)
+    return status, reason
