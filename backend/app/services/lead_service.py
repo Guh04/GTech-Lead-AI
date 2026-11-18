@@ -88,6 +88,11 @@ def build_filters(f: LeadFilters) -> list[Filter]:
         out.append(("status", f"not.in.({closed})"))
     if f.search_id:
         out.append(("prospecting_search_id", f"eq.{f.search_id}"))
+    if f.has_whatsapp is not None:
+        out.append(("whatsapp", "not.is.null" if f.has_whatsapp else "is.null"))
+    if f.contactable:
+        out.append(("do_not_contact", "eq.false"))
+        out.append(("status", f"in.({LeadStatus.NEW.value},{LeadStatus.ANALYZED.value})"))
     return out
 
 
