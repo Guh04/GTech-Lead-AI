@@ -1,0 +1,36 @@
+<div class="page-head">
+  <div>
+    <h1>Abordagem</h1>
+    <p>A IA prepara a primeira mensagem de WhatsApp para os melhores leads. Você revisa, aprova e envia. Nada é enviado automaticamente, e um limite diário protege o seu número.</p>
+  </div>
+</div>
+
+<div id="ab-status" style="margin-bottom:16px"></div>
+
+<section class="card" style="margin-bottom:16px">
+  <div class="card-head"><div><h2>Gerar mensagens</h2><p>Escolhe os leads com WhatsApp e maior pontuação que ainda não foram contatados</p></div></div>
+  <div class="card-body">
+    <div class="row">
+      <label for="ab-count" style="font-size:13px">Quantidade</label>
+      <input class="input" id="ab-count" type="number" min="1" max="100" value="10" style="width:90px">
+      <button class="btn btn-primary" id="ab-generate"><i data-lucide="sparkles" class="icon icon-sm"></i>Gerar mensagens</button>
+    </div>
+    <p class="faint" style="font-size:12px;margin-top:10px">Leads marcados como “não contatar” ou sem WhatsApp são ignorados. Toda mensagem inclui um aviso para quem não quiser receber contato.</p>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <div><h2>Fila de mensagens</h2><p>Revise, edite e aprove antes de enviar</p></div>
+    <button class="btn btn-sm" id="ab-refresh"><i data-lucide="refresh-cw" class="icon icon-sm"></i>Atualizar</button>
+  </div>
+  <div class="card-body stack">
+    <div class="seg-group" id="ab-tabs" style="grid-template-columns:repeat(4,1fr)">
+      <label><input type="radio" name="ab-tab" value="draft" checked><span data-tab-label="draft">Para aprovar</span></label>
+      <label><input type="radio" name="ab-tab" value="approved"><span data-tab-label="approved">Aprovadas</span></label>
+      <label><input type="radio" name="ab-tab" value="sent"><span data-tab-label="sent">Enviadas</span></label>
+      <label><input type="radio" name="ab-tab" value="skipped"><span data-tab-label="skipped">Descartadas</span></label>
+    </div>
+    <div id="ab-list" class="stack"></div>
+  </div>
+</section>
