@@ -93,7 +93,7 @@ def tags_for_segment(segment: str) -> list[tuple[str, str]]:
 
 
 def supported_segments_hint() -> str:
-    return "odontologia, estética, salão de beleza, barbearia, advocacia, contabilidade, imobiliária, academia, restaurante, padaria, farmácia, pet shop, oficina mecânica, arquitetura, psicologia, fisioterapia, clínica médica, escola de idiomas, autoescola, fotografia, construção e reformas"
+    return "odontologia, estética, salão de beleza, barbearia, advocacia, contabilidade, imobiliária, academia, restaurante, padaria, farmácia, pet shop, oficina mecânica, arquitetura, psicologia, fisioterapia, clínica médica, escola de idiomas, autoescola, fotografia, construção e reformas, ótica, floricultura, cafeteria, hotel/pousada, tatuagem, lava-jato, eletricista, encanador, marcenaria/móveis, mercado, loja de roupas, material de construção"
 
 
 class OpenStreetMapProvider:
