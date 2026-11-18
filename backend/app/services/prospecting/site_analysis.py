@@ -173,14 +173,57 @@ class _PageParser(HTMLParser):
         return " ".join(self.text_parts)
 
 
-def classify_html(html_text: str) -> tuple[LandingStatus, str]:
-    """Aplica a heurística ao HTML da página inicial. Retorna (status, motivo)."""
+_WA_NUMBER = re.compile(
+    r"(?:wa\.me/\+?|(?:api|web)\.whatsapp\.com/send/?\?(?:[^\"'#]*&)?phone=\+?|whatsapp://send\?(?:[^\"'#]*&)?phone=\+?)(\d{10,15})",
+    re.I,
+)
+_IG_RESERVED = {"p", "reel", "reels", "explore", "stories", "accounts", "share", "tv", "about", "direct", "web", "developer", "legal"}
+_FB_RESERVED = {"sharer", "sharer.php", "share", "share.php", "dialog", "plugins", "tr", "login", "login.php", "policies", "help", "events", "groups", "watch", "marketplace", "profile.php", "permalink.php"}
+
+
+def extract_contacts(hrefs: list[str]) -> dict[str, str]:
+    """Contatos que a PRÓPRIA empresa publica no site (links wa.me, tel:, Instagram e Facebook).
+
+    Só considera links explícitos; números soltos no texto são ignorados para não gerar falsos positivos.
+    O primeiro de cada tipo vence (normalmente o do cabeçalho/rodapé da empresa).
+    """
+    out: dict[str, str] = {}
+    for raw in hrefs:
+        href = raw.strip()
+        low = href.lower()
+        if "whatsapp" not in out and (m := _WA_NUMBER.search(href)):
+            out["whatsapp"] = m.group(1)
+        elif "phone" not in out and low.startswith("tel:"):
+            digits = re.sub(r"\D", "", href[4:])
+            if 10 <= len(digits) <= 13:
+                out["phone"] = digits
+        elif low.startswith(("http://", "https://", "//")):
+            parts = urlsplit(href if not low.startswith("//") else f"https:{href}")
+            host = (parts.hostname or "").lower().removeprefix("www.").removeprefix("m.")
+            first = next((p for p in parts.path.split("/") if p), "")
+            if "instagram" not in out and host == "instagram.com" and first and first.lower() not in _IG_RESERVED:
+                out["instagram"] = first.lstrip("@")
+            elif "facebook" not in out and host in ("facebook.com", "fb.com") and first and first.lower() not in _FB_RESERVED:
+                out["facebook"] = f"https://facebook.com/{first}"
+    return out
+
+
+def _parse(html_text: str) -> "_PageParser":
     parser = _PageParser()
     try:
         parser.feed(html_text)
         parser.close()
     except Exception:  # HTML muito quebrado: usa o que foi lido até aqui
         pass
+    return parser
+
+
+def classify_html(html_text: str) -> tuple[LandingStatus, str]:
+    """Aplica a heurística ao HTML da página inicial. Retorna (status, motivo)."""
+    return _classify(_parse(html_text))
+
+
+def _classify(parser: "_PageParser") -> tuple[LandingStatus, str]:
     text = parser.text
     sample = f"{parser.title} {text[:3000]}"
     if len(text) < 200 and _PARKED.search(sample):
