@@ -18,7 +18,7 @@ MAX_LEN = 900
 
 MODEL = (
     "Olá, tudo bem?\n\n"
-    "Meu nome é {name}, trabalho com {offer}.\n\n"
+    "{intro} com {offer}.\n\n"
     "Estou entrando em contato para saber se vocês já possuem uma página própria para apresentar seus serviços "
     "e facilitar o contato com novos clientes.\n\n"
     "Caso tenham interesse, posso apresentar uma proposta de como poderíamos desenvolver uma página moderna e "

@@ -239,3 +239,36 @@ def test_leads_filter_with_and_without_whatsapp(client, ana):
     assert names(has_whatsapp="true") == {"Empresa 0", "Empresa 1", "Opt Out"}
     assert names(has_whatsapp="false") == {"Só Telefone"}
     assert names(has_whatsapp="true", contactable="true") == {"Empresa 0", "Empresa 1"}  # sem o "não contatar"
+
+
+# --------------------------------------------------------------------------- texto-modelo
+EXPECTED = (
+    "Olá, tudo bem?\n\n"
+    "Meu nome é Gustavo, trabalho com criação de landing pages e sites profissionais para empresas.\n\n"
+    "Estou entrando em contato para saber se vocês já possuem uma página própria para apresentar seus serviços "
+    "e facilitar o contato com novos clientes.\n\n"
+    "Caso tenham interesse, posso apresentar uma proposta de como poderíamos desenvolver uma página moderna e "
+    "personalizada para o negócio de vocês.\n\n"
+    "Fico à disposição!"
+)
+
+
+def test_template_is_the_owners_message_with_paragraphs_intact(client, ana):
+    ids = make_leads(client, ana, 1)
+    res = client.post(f"/api/outreach/quick/{ids[0]}", headers=ana).json()
+    assert res["message"]["body"] == EXPECTED + "\n\nSe não quiser receber mensagens, é só avisar."
+    assert "%0A%0A" in res["whatsapp_url"]  # os parágrafos chegam ao WhatsApp
+
+
+def test_opt_out_line_can_be_disabled_and_name_is_configurable(make_client, ana):
+    c = make_client(outreach_opt_out="", outreach_sender_name="Maria")
+    ids = make_leads(c, ana, 1)
+    body = c.post(f"/api/outreach/quick/{ids[0]}", headers=ana).json()["message"]["body"]
+    assert body.startswith("Olá, tudo bem?\n\nMeu nome é Maria, trabalho com") and body.endswith("Fico à disposição!")
+
+
+def test_template_without_sender_name_stays_grammatical(make_client, ana):
+    c = make_client(outreach_sender_name="", outreach_opt_out="")
+    ids = make_leads(c, ana, 1)
+    body = c.post(f"/api/outreach/quick/{ids[0]}", headers=ana).json()["message"]["body"]
+    assert "Meu nome é" not in body and "\n\nTrabalho com criação de landing pages" in body
