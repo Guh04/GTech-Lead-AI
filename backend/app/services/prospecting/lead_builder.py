@@ -11,7 +11,7 @@ import httpx
 from app.models.enums import LandingFilter, LandingStatus, WebsiteFilter
 from app.schemas import normalize as n
 from app.schemas.prospecting import SearchRequest
-from app.services.prospecting.site_analysis import analyze_website, classify_url
+from app.services.prospecting.site_analysis import analyze_website_full, classify_url, extract_contacts
 
 
 def _safe(fn, value):
