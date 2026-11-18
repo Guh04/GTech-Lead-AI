@@ -33,6 +33,15 @@ async def generate(body: GenerateRequest, svc: OutreachService = Depends(outreac
     return await svc.generate(body.count, body.search_id)
 
 
+@router.post(
+    "/quick/{lead_id}",
+    summary="Chamar um lead em 1 clique",
+    description="Prepara a mensagem, registra o envio (respeitando limite diário e intervalo) e devolve o link do WhatsApp.",
+)
+async def quick_send(lead_id: UUID, svc: OutreachService = Depends(outreach_service)):
+    return await svc.quick_send(str(lead_id))
+
+
 @router.patch("/{message_id}", summary="Editar o texto (volta para rascunho)")
 async def edit(message_id: UUID, body: MessageUpdate, svc: OutreachService = Depends(outreach_service)):
     return await svc.edit(str(message_id), body.body)
