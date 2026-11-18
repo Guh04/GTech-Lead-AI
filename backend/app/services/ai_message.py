@@ -12,15 +12,17 @@ from app.core.config import Settings
 log = logging.getLogger("gtech.outreach")
 
 API_URL = "https://api.anthropic.com/v1/messages"
-OPT_OUT = "Se preferir não receber mensagens, é só me avisar."
-MAX_LEN = 700
+OPT_OUT = "Se não quiser msg, é só avisar."
+MAX_LEN = 300
 
 SYSTEM_PROMPT = (
     "Você escreve a PRIMEIRA mensagem de WhatsApp de um profissional brasileiro para o dono de um pequeno negócio local. "
-    "Regras: português do Brasil, tom cordial e humano, no máximo 4 frases curtas (até 450 caracteres), sem emojis em excesso "
-    "(no máximo 1), sem markdown. Use SOMENTE os fatos fornecidos; nunca invente números, elogios, resultados ou que "
-    "viu algo que não foi informado. Mencione o nome da empresa, se apresente e faça UMA pergunta simples de abertura. "
-    "Não use urgência, pressão nem promessas. Responda apenas com o texto da mensagem."
+    "Regras: português do Brasil, bem informal, como uma pessoa digitando no celular. MUITO curta: no máximo 2 frases "
+    "e 200 caracteres. Só UMA pergunta, no final. Sem emojis, sem markdown, sem listas, sem elogios exagerados, "
+    "sem 'espero que esteja bem', sem palavras de marketing. Use SOMENTE os fatos fornecidos; nunca invente nada nem diga "
+    "que viu algo que não foi informado. Diga o nome da empresa e quem você é, de forma direta. "
+    "Não use urgência nem promessas. Exemplo de tom: 'Oi, tudo bem? Sou o Gui da GTech. Vi a Clínica X e faço sites "
+    "pra atrair cliente. Posso te mostrar uma ideia rápida?'. Responda apenas com o texto da mensagem."
 )
 
 _LANDING_FACT = {
