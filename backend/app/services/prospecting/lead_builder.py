@@ -61,20 +61,35 @@ async def build_lead(
     if not wants_site(request, website is not None):
         return None
 
+    found: dict[str, str] = {}  # contatos que a própria empresa publica no site/link
     if website is None:
         landing, reason = LandingStatus.NONE, f"sem site informado no perfil público ({origin})"
         if instagram or facebook:
             reason = f"perfil público ({origin}) informa apenas rede social"
     elif kind == "link_only":
         landing, reason = LandingStatus.SITE_ONLY, "endereço é página de links, mensageiro ou marketplace (não é landing page própria)"
+        found = extract_contacts([website])  # ex.: o "site" é um link wa.me/55...
     else:
         async with gate:
-            landing, reason = await analyze_website(http, website)
+            landing, reason, found = await analyze_website_full(http, website)
 
     if not wants_landing(request, landing):
         return None
 
+    # Dados do provedor têm prioridade; o que veio do site só preenche o que está vazio.
+    whatsapp = _safe(n.normalize_phone, whatsapp) or _safe(n.normalize_phone, found.get("whatsapp"))
+    phone = _safe(n.normalize_phone, phone) or _safe(n.normalize_phone, found.get("phone"))
+    from_site = [label for key, label, had in (
+        ("whatsapp", "WhatsApp", bool(whatsapp) and whatsapp == _safe(n.normalize_phone, found.get("whatsapp"))),
+        ("instagram", "Instagram", not instagram and bool(found.get("instagram"))),
+        ("facebook", "Facebook", not facebook and bool(found.get("facebook"))),
+    ) if had and found.get(key)]
+    instagram = instagram or _safe(n.normalize_instagram, found.get("instagram"))
+    facebook = facebook or _safe(n.normalize_facebook, found.get("facebook"))
+
     notes = [f"Encontrado via {origin}. Landing page: {landing.value} ({reason})."]
+    if from_site:
+        notes.append(f"Contatos lidos do site da própria empresa: {', '.join(from_site)}.")
     if address:
         notes.append(f"Endereço: {address}.")
     if attribution:
