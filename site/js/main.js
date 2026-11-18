@@ -108,8 +108,13 @@
                 { duration: 5400, delay: 900, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'both' });
             }
           } else if (im.classList.contains('on')) {
-            im.classList.remove('on');
-            setTimeout(() => { if (!im.classList.contains('on')) im.getAnimations().forEach((a) => a.cancel()); }, 1400);
+            // a tela antiga fica por baixo até a nova estar 100% visível (sem vão entre as duas)
+            im.classList.toggle('on', false);
+            im.classList.toggle('leaving', true);
+            setTimeout(() => {
+              im.classList.toggle('leaving', false);
+              if (!im.classList.contains('on')) im.getAnimations().forEach((a) => a.cancel());
+            }, 1500);
           }
         });
       });
@@ -118,8 +123,16 @@
     if (!reduce && count > 1) {
       let idx = 0;
       let timer = null;
-      const start = () => { stop(); timer = setInterval(() => { idx = (idx + 1) % count; show(idx); }, 7000); };
-      const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+      const ready = (n) => rotators.every((box) => $$('img', box)[n].complete);
+      const step = () => {
+        const next = (idx + 1) % count;
+        if (!ready(next)) { timer = setTimeout(step, 400); return; }  // espera a próxima tela carregar
+        idx = next;
+        show(idx);
+        timer = setTimeout(step, 7000);
+      };
+      const start = () => { stop(); timer = setTimeout(step, 7000); };
+      const stop = () => { if (timer) { clearTimeout(timer); timer = null; } };
       show(0);
       start();
       document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
