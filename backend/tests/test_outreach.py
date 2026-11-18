@@ -68,8 +68,9 @@ def test_ai_message_is_used_when_key_is_set(make_client, ana, fake):
     assert msg["source"] == "ai" and msg["body"].startswith("Oi! Sou o Gui")
     assert "avisar" in msg["body"].lower()  # opt-out acrescentado mesmo se a IA esquecer
     assert captured["headers"]["x-api-key"] == "sk-test"
-    assert "Empresa 0" in captured["body"]["messages"][0]["content"]
-    assert "whatsapp" not in captured["body"]["messages"][0]["content"].lower()  # telefone do lead não vai para a IA
+    sent_to_ai = captured["body"]["messages"][0]["content"]
+    assert "Meu nome é Gustavo" in sent_to_ai and "landing pages e sites profissionais" in sent_to_ai  # a IA recebe o texto-modelo
+    assert "Empresa 0" not in sent_to_ai and "11999990000" not in sent_to_ai  # e nenhum dado do lead
 
 
 def test_ai_failure_falls_back_to_template(make_client, ana, fake):
