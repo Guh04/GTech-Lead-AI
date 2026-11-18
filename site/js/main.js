@@ -100,6 +100,7 @@
         $$('img', box).forEach((im, k) => {
           if (k === idx) {
             im.getAnimations().forEach((a) => a.cancel());
+            im.classList.toggle('leaving', false);
             im.classList.add('on');
             if (!reduce && im.animate) {
               // desliza a página até uma parte do conteúdo, como se alguém estivesse navegando
