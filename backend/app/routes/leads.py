@@ -81,8 +81,12 @@ async def cleanup_preview(
     description="Apaga leads criados antes de hoje que ainda estão como novo/analisado e sem 'não contatar'. "
     "Leads já contatados, em negociação, fechados ou com pedido de não contato são preservados.",
 )
-async def cleanup(cutoff: str = Depends(today_cutoff), svc: LeadService = Depends(lead_service)):
-    return await svc.cleanup(cutoff)
+async def cleanup(
+    include_today: bool = Query(False, description="true = apaga também os leads de hoje que ainda não foram contatados"),
+    cutoff: str = Depends(today_cutoff),
+    svc: LeadService = Depends(lead_service),
+):
+    return await svc.cleanup(None if include_today else cutoff)
 
 
 @router.get("/{lead_id}", response_model=LeadOut, summary="Detalhes de um lead")
