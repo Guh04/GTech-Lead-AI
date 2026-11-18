@@ -212,7 +212,8 @@ body{animation:pg .55s var(--ease) both}
   .burger{display:inline-grid}
   .hero .grid{grid-template-columns:1fr}
   .hero:before{display:none}
-  .stage{min-height:0;aspect-ratio:1/.92;margin-top:10px}
+  .stage{min-height:0;aspect-ratio:1/.92;margin:10px 0 44px}
+  .stage .tag{left:0;bottom:-40px}
   .laptop{width:90%;top:2%}
   .phone{width:30%}
   .work-grid{grid-template-columns:1fr}

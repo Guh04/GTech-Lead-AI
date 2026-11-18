@@ -14,7 +14,22 @@ CHROME = next((p for p in (
 ) if Path(p).exists()), None)
 
 
+MIN_WINDOW = 520  # o Chrome em modo headless não cria janelas muito estreitas
+
+
 def shot(html: Path, png: Path, width: int, height: int, scale: float = 1.0, bg: str | None = None) -> None:
+    """Captura a página. Para larguras de celular, renderiza num <iframe> com a largura exata
+    (assim os media queries respondem à largura real) e corta o excedente depois."""
+    if width < MIN_WINDOW:
+        from PIL import Image
+        wrapper = Path(tempfile.mkdtemp()) / "m.html"
+        wrapper.write_text(
+            f'<!doctype html><meta charset="utf-8"><style>html,body{{margin:0;background:#fff}}iframe{{display:block;border:0;width:{width}px;height:{height}px}}</style>'
+            f'<iframe src="{html.resolve().as_uri()}"></iframe>', encoding="utf-8")
+        shot(wrapper, png, MIN_WINDOW, height, scale, bg)
+        img = Image.open(png.resolve())
+        img.crop((0, 0, round(width * scale), round(height * scale))).save(png.resolve())
+        return
     if not CHROME:
         raise SystemExit("Chrome/Edge não encontrado.")
     png = png.resolve()  # o Chrome grava relativo ao diretório dele, não ao nosso
