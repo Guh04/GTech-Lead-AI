@@ -100,12 +100,18 @@ export async function mount(view) {
     paintWait();
   }
 
+  // Filtros comuns às abas e aos contadores.
+  const filters = () => ({
+    contactable: $('#ct-only-new', view).checked || undefined,
+    landing_status: $('#ct-no-site', view).checked ? 'none' : undefined,
+  });
+
   async function loadCounts() {
     // Só os totais; as listas completas vêm sob demanda.
     try {
       const [w, wo] = await Promise.all([
-        api.listLeads({ has_whatsapp: true, contactable: $('#ct-only-new', view).checked || undefined, page_size: 1 }),
-        api.listLeads({ has_whatsapp: false, contactable: $('#ct-only-new', view).checked || undefined, page_size: 1 }),
+        api.listLeads({ has_whatsapp: true, ...filters(), page_size: 1 }),
+        api.listLeads({ has_whatsapp: false, ...filters(), page_size: 1 }),
       ]);
       if (!alive) return;
       $('[data-tab-label="with"]', view).textContent = `Com WhatsApp (${w.total})`;
@@ -119,7 +125,7 @@ export async function mount(view) {
       const [res, st] = await Promise.all([
         api.listLeads({
           has_whatsapp: tab === 'with',
-          contactable: $('#ct-only-new', view).checked || undefined,
+          ...filters(),
           sort: 'score_desc',
           page_size: PAGE_SIZE,
         }),
@@ -147,6 +153,7 @@ export async function mount(view) {
 
   $('#ct-tabs', view).addEventListener('change', (e) => { tab = e.target.value; load(); });
   $('#ct-only-new', view).addEventListener('change', load);
+  $('#ct-no-site', view).addEventListener('change', load);
 
   view.addEventListener('click', async (e) => {
     const btn = e.target.closest('[data-act]');
