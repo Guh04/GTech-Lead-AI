@@ -54,8 +54,8 @@ def template_message(lead: dict, settings: Settings) -> str:
     company = settings.outreach_sender_company
     who = f"Aqui é {sender} da {company}" if sender else f"Sou da {company}"
     hook = {
-        "none": "e vi que vocês ainda não têm site",
-        "site_only": "e vi que dá pra turbinar o site de vocês",
+        "none": "e reparei que vocês ainda não têm site",
+        "site_only": "e acho que dá pra turbinar o site de vocês",
     }.get(lead.get("landing_page_status"), "")
     seen = f"Vi a {lead['company_name']}" + (f" {hook}" if hook else "")
     return finish(f"Oi, tudo bem? {who}. {seen}. Posso te mandar uma ideia rápida?")
