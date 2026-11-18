@@ -186,3 +186,55 @@ def test_users_are_isolated(client, ana, bia):
     assert client.get("/api/outreach", headers=bia).json() == []
     assert client.post(f"/api/outreach/{mid}/approve", headers=bia).status_code == 404
     assert client.get("/api/outreach/status", headers=bia).json()["sent_today"] == 0
+
+
+# --------------------------------------------------------------------------- envio rápido (1 clique)
+def test_quick_send_in_one_click(client, ana):
+    ids = make_leads(client, ana, 1)
+    r = client.post(f"/api/outreach/quick/{ids[0]}", headers=ana)
+    assert r.status_code == 200, r.text
+    data = r.json()
+    assert urlsplit(data["whatsapp_url"]).path == "/5511999990000"
+    assert parse_qs(urlsplit(data["whatsapp_url"]).query)["text"][0] == data["message"]["body"]
+    assert data["message"]["status"] == "sent" and data["status"]["sent_today"] == 1
+    assert client.get(f"/api/leads/{ids[0]}", headers=ana).json()["status"] == "contacted"
+
+
+def test_quick_send_uses_existing_pending_message(client, ana, fake):
+    ids = make_leads(client, ana, 1)
+    mid = generate(client, ana).json()["items"][0]["id"]
+    client.patch(f"/api/outreach/{mid}", json={"body": "Texto que eu mesmo editei."}, headers=ana)
+    r = client.post(f"/api/outreach/quick/{ids[0]}", headers=ana)
+    assert r.status_code == 200 and r.json()["message"]["id"] == mid
+    assert parse_qs(urlsplit(r.json()["whatsapp_url"]).query)["text"][0] == "Texto que eu mesmo editei."
+    assert len(fake.rows["outreach_messages"]) == 1  # não duplica
+
+
+def test_quick_send_respects_rules(make_client, ana):
+    c = make_client(outreach_daily_limit=1)
+    ids = make_leads(c, ana, 2)
+    no_zap = c.post("/api/leads", json=lead(company_name="Sem Zap", city="X"), headers=ana).json()["id"]
+    opt_out = c.post("/api/leads", json=lead(company_name="Opt", city="Y", whatsapp="11911112222", do_not_contact=True), headers=ana).json()["id"]
+    assert c.post(f"/api/outreach/quick/{no_zap}", headers=ana).json()["error"]["code"] == "no_whatsapp"
+    assert c.post(f"/api/outreach/quick/{opt_out}", headers=ana).json()["error"]["code"] == "do_not_contact"
+    assert c.post(f"/api/outreach/quick/{ids[0]}", headers=ana).status_code == 200
+    blocked = c.post(f"/api/outreach/quick/{ids[1]}", headers=ana)
+    assert blocked.status_code == 429 and blocked.json()["error"]["code"] == "daily_limit_reached"
+    assert c.get("/api/outreach", headers=ana, params={"status": "approved"}).json() == []  # nada ficou "preso"
+
+
+def test_quick_send_minimum_interval(make_client, ana):
+    c = make_client(outreach_min_interval_seconds=300)
+    a, b = make_leads(c, ana, 2)
+    assert c.post(f"/api/outreach/quick/{a}", headers=ana).status_code == 200
+    assert c.post(f"/api/outreach/quick/{b}", headers=ana).json()["error"]["code"] == "too_soon"
+
+
+def test_leads_filter_with_and_without_whatsapp(client, ana):
+    make_leads(client, ana, 2)
+    client.post("/api/leads", json=lead(company_name="Só Telefone", city="A", phone="1133334444"), headers=ana)
+    client.post("/api/leads", json=lead(company_name="Opt Out", city="B", whatsapp="11922223333", do_not_contact=True), headers=ana)
+    names = lambda **p: {l["company_name"] for l in client.get("/api/leads", params=p, headers=ana).json()["items"]}  # noqa: E731
+    assert names(has_whatsapp="true") == {"Empresa 0", "Empresa 1", "Opt Out"}
+    assert names(has_whatsapp="false") == {"Só Telefone"}
+    assert names(has_whatsapp="true", contactable="true") == {"Empresa 0", "Empresa 1"}  # sem o "não contatar"
