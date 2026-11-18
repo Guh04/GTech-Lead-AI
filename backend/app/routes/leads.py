@@ -66,6 +66,21 @@ async def create_lead(body: LeadCreate, svc: LeadService = Depends(lead_service)
     return await svc.create(body)
 
 
+@router.get("/cleanup/preview", summary="Quantos leads de dias anteriores seriam apagados (nada é apagado)")
+async def cleanup_preview(cutoff: str = Depends(today_cutoff), svc: LeadService = Depends(lead_service)):
+    return await svc.cleanup_preview(cutoff)
+
+
+@router.post(
+    "/cleanup",
+    summary="Apagar leads de dias anteriores",
+    description="Apaga leads criados antes de hoje que ainda estão como novo/analisado e sem 'não contatar'. "
+    "Leads já contatados, em negociação, fechados ou com pedido de não contato são preservados.",
+)
+async def cleanup(cutoff: str = Depends(today_cutoff), svc: LeadService = Depends(lead_service)):
+    return await svc.cleanup(cutoff)
+
+
 @router.get("/{lead_id}", response_model=LeadOut, summary="Detalhes de um lead")
 async def get_lead(lead_id: UUID, svc: LeadService = Depends(lead_service)):
     return await svc.get(str(lead_id))
