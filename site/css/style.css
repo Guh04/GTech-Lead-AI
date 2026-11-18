@@ -1,6 +1,4 @@
 /* GTech Digital Studio — site institucional. CSS puro, sem frameworks. */
-@import url("fonts.css");
-
 :root{
   --ink:#0A0C10; --gr:#1B1F27; --gr2:#2A2F3A; --off:#F3F1EC; --white:#fff;
   --blue:#1D4DFF; --blue-d:#6F8CFF;            /* azul principal / azul para fundos escuros */
