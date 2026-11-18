@@ -69,7 +69,7 @@ def test_ai_message_is_used_when_key_is_set(make_client, ana, fake):
     assert "avisar" in msg["body"].lower()  # opt-out acrescentado mesmo se a IA esquecer
     assert captured["headers"]["x-api-key"] == "sk-test"
     sent_to_ai = captured["body"]["messages"][0]["content"]
-    assert "Meu nome é Gustavo" in sent_to_ai and "landing pages e sites profissionais" in sent_to_ai  # a IA recebe o texto-modelo
+    assert "Meu nome é Gustavo, da GTech Digital Studio" in sent_to_ai and "landing pages e sites profissionais" in sent_to_ai  # a IA recebe o texto-modelo
     assert "Empresa 0" not in sent_to_ai and "11999990000" not in sent_to_ai  # e nenhum dado do lead
 
 
@@ -244,7 +244,7 @@ def test_leads_filter_with_and_without_whatsapp(client, ana):
 # --------------------------------------------------------------------------- texto-modelo
 EXPECTED = (
     "Olá, tudo bem?\n\n"
-    "Meu nome é Gustavo, trabalho com criação de landing pages e sites profissionais para empresas.\n\n"
+    "Meu nome é Gustavo, da GTech Digital Studio, e trabalho com criação de landing pages e sites profissionais para empresas.\n\n"
     "Estou entrando em contato para saber se vocês já possuem uma página própria para apresentar seus serviços "
     "e facilitar o contato com novos clientes.\n\n"
     "Caso tenham interesse, posso apresentar uma proposta de como poderíamos desenvolver uma página moderna e "
@@ -264,11 +264,11 @@ def test_opt_out_line_can_be_disabled_and_name_is_configurable(make_client, ana)
     c = make_client(outreach_opt_out="", outreach_sender_name="Maria")
     ids = make_leads(c, ana, 1)
     body = c.post(f"/api/outreach/quick/{ids[0]}", headers=ana).json()["message"]["body"]
-    assert body.startswith("Olá, tudo bem?\n\nMeu nome é Maria, trabalho com") and body.endswith("Fico à disposição!")
+    assert body.startswith("Olá, tudo bem?\n\nMeu nome é Maria, da GTech Digital Studio, e trabalho com") and body.endswith("Fico à disposição!")
 
 
 def test_template_without_sender_name_stays_grammatical(make_client, ana):
     c = make_client(outreach_sender_name="", outreach_opt_out="")
     ids = make_leads(c, ana, 1)
     body = c.post(f"/api/outreach/quick/{ids[0]}", headers=ana).json()["message"]["body"]
-    assert "Meu nome é" not in body and "\n\nTrabalho com criação de landing pages" in body
+    assert "Meu nome é" not in body and "\n\nSou da GTech Digital Studio e trabalho com criação de landing pages" in body
