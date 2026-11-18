@@ -52,6 +52,8 @@ class LeadFilters:
     source: LeadSource | None = None
     active: bool = False
     search_id: str | None = None
+    has_whatsapp: bool | None = None  # True = só com WhatsApp; False = só sem
+    contactable: bool = False  # ainda não contatado e sem pedido de "não contatar"
     sort: str = "created_desc"
 
 
