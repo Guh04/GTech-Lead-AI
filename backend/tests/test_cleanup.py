@@ -55,3 +55,22 @@ def test_cleanup_is_per_user(client, ana, bia, fake):
     make(client, ana, fake, "Da Ana", days_ago=2)
     assert client.post("/api/leads/cleanup", headers=bia).json() == {"deleted": 0}
     assert names(fake) == {"Da Ana"}
+
+
+def test_cleanup_including_today_keeps_only_contacted_and_opt_out(client, ana, fake):
+    make(client, ana, fake, "Hoje Novo")
+    make(client, ana, fake, "Ontem Novo", days_ago=1)
+    make(client, ana, fake, "Hoje Contatado", status="contacted")
+    make(client, ana, fake, "Hoje Interessado", status="interested")
+    make(client, ana, fake, "Hoje Opt Out", do_not_contact=True)
+    assert client.get("/api/leads/cleanup/preview", params={"include_today": "true"}, headers=ana).json() == {"deletable": 2, "protected": 3}
+    assert names(fake) >= {"Hoje Novo"}  # a prévia não apaga nada
+    r = client.post("/api/leads/cleanup", params={"include_today": "true"}, headers=ana)
+    assert r.json() == {"deleted": 2}
+    assert names(fake) == {"Hoje Contatado", "Hoje Interessado", "Hoje Opt Out"}
+
+
+def test_default_cleanup_still_keeps_today(client, ana, fake):
+    make(client, ana, fake, "Hoje Novo")
+    assert client.post("/api/leads/cleanup", headers=ana).json() == {"deleted": 0}
+    assert names(fake) == {"Hoje Novo"}

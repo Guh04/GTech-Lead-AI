@@ -141,27 +141,32 @@ export async function mount(view) {
   });
 
   // Limpeza: mostra a prévia (nada é apagado) e só apaga após confirmação explícita.
-  $('#cleanup-btn', view).addEventListener('click', async (e) => {
+  // includeToday=false: só leads de dias anteriores. includeToday=true: tudo que ainda não foi contatado.
+  const runCleanup = async (btn, includeToday) => {
+    const params = includeToday ? { include_today: true } : undefined;
+    const what = includeToday ? 'que ainda não foram contatados' : 'de dias anteriores';
     try {
-      const prev = await withLoading(e.currentTarget, () => api.get('/leads/cleanup/preview'));
+      const prev = await withLoading(btn, () => api.get('/leads/cleanup/preview', params));
       if (!prev.deletable) {
-        toast(prev.protected ? `Nada a apagar: os ${prev.protected} lead(s) de dias anteriores já foram contatados ou pediram para não ser contatados.` : 'Não há leads de dias anteriores.', 'info');
+        toast(prev.protected ? `Nada a apagar: os ${prev.protected} lead(s) restantes já foram contatados ou pediram para não ser contatados.` : `Não há leads ${what}.`, 'info');
         return;
       }
       const ok = await confirmDialog({
-        title: 'Limpar leads de dias anteriores',
-        message: `Apagar ${prev.deletable} lead(s) criados antes de hoje?`,
-        detail: `Os leads de hoje ficam. ${prev.protected ? `${prev.protected} lead(s) antigos serão mantidos por já terem sido contatados, estarem em negociação ou terem pedido para não ser contatados. ` : ''}O histórico e as mensagens dos leads apagados também são removidos. Esta ação não pode ser desfeita.`,
+        title: includeToday ? 'Limpar leads não contatados' : 'Limpar leads de dias anteriores',
+        message: `Apagar ${prev.deletable} lead(s) ${what}?`,
+        detail: `${includeToday ? 'Isso inclui os leads de hoje. ' : 'Os leads de hoje ficam. '}${prev.protected ? `${prev.protected} lead(s) serão mantidos por já terem sido contatados, estarem em negociação ou terem pedido para não ser contatados. ` : ''}Atenção: se você chamou alguém fora do sistema e não mudou o estágio do lead, ele ainda conta como “não contatado” e será apagado. O histórico e as mensagens dos leads apagados também são removidos. Esta ação não pode ser desfeita.`,
         confirmLabel: `Apagar ${prev.deletable} lead(s)`,
         danger: true,
       });
       if (!ok) return;
-      const res = await api.post('/leads/cleanup');
-      toast(`${res.deleted} lead(s) de dias anteriores apagados.`, 'success');
+      const res = await api.post(`/leads/cleanup${includeToday ? '?include_today=true' : ''}`);
+      toast(`${res.deleted} lead(s) apagados.`, 'success');
       page = 1;
       load();
     } catch (err) { toastError(err); }
-  });
+  };
+  $('#cleanup-btn', view).addEventListener('click', (e) => runCleanup(e.currentTarget, false));
+  $('#cleanup-all-btn', view).addEventListener('click', (e) => runCleanup(e.currentTarget, true));
 
   view.addEventListener('click', async (e) => {
     if (e.target.closest('[data-new]')) return create();
