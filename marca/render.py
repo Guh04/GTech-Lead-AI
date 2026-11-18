@@ -17,6 +17,7 @@ CHROME = next((p for p in (
 def shot(html: Path, png: Path, width: int, height: int, scale: float = 1.0) -> None:
     if not CHROME:
         raise SystemExit("Chrome/Edge não encontrado.")
+    png = png.resolve()  # o Chrome grava relativo ao diretório dele, não ao nosso
     png.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as profile:
         subprocess.run([
