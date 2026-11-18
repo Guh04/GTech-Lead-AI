@@ -16,7 +16,7 @@ from app.core.errors import AppError, not_found
 from app.core.supabase import Database
 from app.models.enums import ActivityType, LeadStatus, OutreachStatus
 from app.schemas.outreach import OutreachStatusOut
-from app.services import ai_message
+from app.services import ai_message, whatsapp_sender
 from app.services.lead_service import LeadService
 
 log = logging.getLogger("gtech.outreach")
