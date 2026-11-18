@@ -15,7 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from app.core.config import Settings, get_settings
 from app.core.errors import register_error_handlers
 from app.core.supabase import SupabaseAuth
-from app.routes import analytics, auth, leads, prospecting
+from app.routes import analytics, auth, leads, outreach, prospecting
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("gtech")
