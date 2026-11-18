@@ -50,6 +50,16 @@ async def facets(svc: LeadService = Depends(lead_service)):
     return await svc.facets()
 
 
+@router.get("/{lead_id}/demo", summary="Página de demonstração (ZIP) para o lead, pronta para publicar")
+async def demo_site(lead_id: UUID, svc: LeadService = Depends(lead_service)):
+    lead = await svc.get(str(lead_id))
+    return Response(
+        content=demo_site_service.build_zip(lead),
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="demo-{demo_site_service.slug(lead["company_name"])}.zip"'},
+    )
+
+
 @router.get("/export", summary="Exportar leads para CSV (respeita os filtros)")
 async def export_csv(f: LeadFilters = Depends(filters), svc: LeadService = Depends(lead_service)):
     content = await svc.export_csv(f)
