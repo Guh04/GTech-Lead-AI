@@ -177,6 +177,7 @@ class FakeSupabase:
             self.rows[table] = [r for r in self.rows[table] if r["id"] not in ids]
             if table == "leads":  # ON DELETE CASCADE
                 self.rows["lead_activities"] = [a for a in self.rows["lead_activities"] if a["lead_id"] not in ids]
+                self.rows["outreach_messages"] = [a for a in self.rows["outreach_messages"] if a["lead_id"] not in ids]
             return httpx.Response(200, json=doomed)
         return httpx.Response(405, json={})
 
