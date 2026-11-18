@@ -245,9 +245,32 @@ class OutreachService:
         )
         if not rows:
             raise AppError(409, "already_sent", "Esta mensagem já foi enviada.")
+
+        # A mensagem já está "reservada" como enviada (evita envio duplo em cliques repetidos).
+        delivery = "link"
+        if self.settings.whatsmcp_configured:
+            try:
+                delivery = await whatsapp_sender.send_text(self.settings, self.http, normalize_phone(lead["whatsapp"]), msg["body"])
+            except whatsapp_sender.SendFailed as exc:
+                # Nada saiu: devolve para "aprovada" para tentar de novo e não consumir o limite do dia.
+                await self.db.update(
+                    "outreach_messages",
+                    {"status": OutreachStatus.APPROVED.value, "sent_at": None},
+                    [("id", f"eq.{message_id}"), ("status", f"eq.{OutreachStatus.SENT.value}")],
+                )
+                raise AppError(502, "whatsapp_send_failed", str(exc)) from exc
+            except whatsapp_sender.SendUnknown:
+                delivery = "unknown"  # pode ter saído: mantém como enviada para nunca duplicar
+
         if lead["status"] in (LeadStatus.NEW.value, LeadStatus.ANALYZED.value):
             await self.leads.move_status(lead["id"], LeadStatus.CONTACTED)
+        note = "(aberta pelo usuário)" if delivery == "link" else "pelo WhatsApp conectado" + (" (sem confirmação de entrega)" if delivery == "unknown" else "")
         await self.leads.activities.log(
-            lead["id"], ActivityType.MESSAGE_PREPARED, "Mensagem de WhatsApp enviada (aberta pelo usuário).", {"outreach_id": message_id}
+            lead["id"], ActivityType.MESSAGE_PREPARED, f"Mensagem de WhatsApp enviada {note}.", {"outreach_id": message_id, "delivery": delivery}
         )
-        return {"message": rows[0], "whatsapp_url": whatsapp_url(lead["whatsapp"], msg["body"]), "status": (await self.status()).model_dump()}
+        return {
+            "message": rows[0],
+            "delivery": delivery,  # link = abrir wa.me | sent/queued = enviada pelo sistema | unknown = sem confirmação
+            "whatsapp_url": whatsapp_url(lead["whatsapp"], msg["body"]) if delivery == "link" else None,
+            "status": (await self.status()).model_dump(),
+        }
