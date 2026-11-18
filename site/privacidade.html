@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de privacidade | GTech Digital Studio</title>
+<meta name="description" content="Como o site da GTech Digital Studio trata dados: sem cookies, sem rastreadores e sem formulários que armazenem informações.">
+<meta name="theme-color" content="#0A0C10">
+<link rel="canonical" href="__SITE_URL__/privacidade.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/style.css">
+<style>
+.doc{padding:clamp(120px,14vw,170px) 0 clamp(70px,9vw,120px)}
+.doc .wrap{max-width:780px}
+.doc h1{font-size:clamp(2.6rem,6vw,4.4rem);margin:18px 0 28px}
+.doc h2{font-family:var(--serif);font-weight:400;font-size:1.9rem;margin:44px 0 12px;line-height:1.1}
+.doc p,.doc li{color:var(--mut-l);margin-bottom:12px}
+.doc ul{list-style:disc;padding-left:22px}
+.doc a{color:var(--blue);text-decoration:underline;text-underline-offset:3px}
+.hdr{background:rgba(10,12,16,.9);border-color:var(--line-d)}
+</style>
+</head>
+<body>
+<header class="hdr solid">
+  <div class="wrap in">
+    <a class="logo" href="index.html" aria-label="GTech Digital Studio, voltar ao site">
+      <svg class="sym" viewBox="10 11 84 84" aria-hidden="true"><path d="M76 28H22V78H82V54H54" fill="none" stroke="currentColor" stroke-width="12" stroke-linejoin="miter"/><rect x="76" y="22" width="12" height="12" fill="#1D4DFF"/></svg>
+      <span><b>GTech</b><small>Digital Studio</small></span>
+    </a>
+    <a class="btn btn-ghost" href="index.html" style="color:#fff">← Voltar ao site</a>
+  </div>
+</header>
+
+<main class="doc off">
+  <div class="wrap">
+    <span class="eyebrow">Privacidade</span>
+    <h1 class="serif">Política de <em>privacidade.</em></h1>
+    <p>Esta página explica, de forma simples, como o site da GTech Digital Studio trata informações de quem o visita.</p>
+
+    <h2>O que o site coleta</h2>
+    <p>Nada. O site não usa cookies, não tem ferramentas de análise ou rastreamento e não possui formulários que armazenem dados. As fontes e imagens são servidas pelo próprio site.</p>
+
+    <h2>Quando você entra em contato</h2>
+    <p>Os botões de contato apenas abrem o seu WhatsApp, o seu aplicativo de e-mail ou o Instagram, com uma mensagem inicial que você pode editar antes de enviar. A conversa acontece nesses serviços, que têm as próprias políticas de privacidade.</p>
+
+    <h2>Projetos demonstrativos</h2>
+    <p>As páginas em <strong>Projetos</strong> são demonstrações conceituais, com marcas e dados fictícios. Seus formulários não enviam nem guardam nada: servem só para mostrar como o site funcionaria.</p>
+
+    <h2>Dados fornecidos por você</h2>
+    <p>Se você nos enviar informações por WhatsApp ou e-mail, usamos esses dados apenas para responder ao seu contato e elaborar o orçamento solicitado. Você pode pedir a correção ou a exclusão desses dados a qualquer momento.</p>
+
+    <h2>Contato sobre privacidade</h2>
+    <p>Dúvidas ou solicitações: <a data-mail href="mailto:contato.gtechsuporte@gmail.com">contato.gtechsuporte@gmail.com</a>.</p>
+    <p data-legal style="font-size:.9rem">GTech Digital Studio · CNPJ 68.265.338/0001-09 · Sorocaba/SP</p>
+  </div>
+</main>
+
+<script src="js/config.js"></script>
+<script>
+  const S = window.SITE || {};
+  document.querySelectorAll('[data-mail]').forEach((a) => { a.href = `mailto:${S.email}`; a.textContent = S.email; });
+  document.querySelectorAll('[data-legal]').forEach((el) => { el.textContent = [S.responsible, S.cnpj && `CNPJ ${S.cnpj}`, S.city].filter(Boolean).join(' · '); });
+</script>
+</body>
+</html>
