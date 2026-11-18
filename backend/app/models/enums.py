@@ -71,6 +71,13 @@ class SearchStatus(StrEnum):
     FAILED = "failed"
 
 
+class OutreachStatus(StrEnum):
+    DRAFT = "draft"  # gerada pela IA, aguardando aprovação
+    APPROVED = "approved"  # aprovada pelo usuário, pronta para enviar
+    SENT = "sent"  # o usuário abriu o WhatsApp e enviou
+    SKIPPED = "skipped"  # descartada
+
+
 class WebsiteFilter(StrEnum):
     ANY = "any"
     WITH_SITE = "with_site"
