@@ -49,6 +49,8 @@ export const SEGMENT_SUGGESTIONS = [
   'Academia', 'Salão de beleza', 'Barbearia', 'Restaurante', 'Pet shop', 'Oficina mecânica',
   'Arquitetura e design', 'Psicologia', 'Nutrição', 'Fisioterapia', 'Escola de idiomas',
   'Autoescola', 'Energia solar', 'Construção e reformas', 'Fotografia',
+  'Ótica', 'Floricultura', 'Cafeteria', 'Pousada', 'Estúdio de tatuagem', 'Lava-jato', 'Eletricista',
+  'Encanador', 'Marcenaria', 'Mercado', 'Loja de roupas', 'Material de construção',
 ];
 
 export const ACTIVITY_ICONS = {
