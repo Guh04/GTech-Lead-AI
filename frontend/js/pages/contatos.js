@@ -159,9 +159,13 @@ export async function mount(view) {
           const res = await withLoading(btn, () => api.post(`/outreach/quick/${id}`));
           status = res.status;
           renderStatus();
-          const w = window.open(res.whatsapp_url, '_blank');
-          if (w) w.opener = null;
-          else toast('O navegador bloqueou a janela do WhatsApp. Permita pop-ups para este site.', 'warning');
+          if (res.delivery !== 'link') {
+            toast(res.delivery === 'unknown' ? 'Envio sem confirmação do WhatsMCP. Confira a conversa antes de tentar de novo.' : 'Mensagem enviada pelo WhatsApp.', res.delivery === 'unknown' ? 'warning' : 'success');
+          } else {
+            const w = window.open(res.whatsapp_url, '_blank');
+            if (w) w.opener = null;
+            else toast('O navegador bloqueou a janela do WhatsApp. Permita pop-ups para este site.', 'warning');
+          }
           if ($('#ct-only-new', view).checked) removeRow(id);
           startWait(res.status.wait_seconds || status.min_interval_seconds);
           break;
