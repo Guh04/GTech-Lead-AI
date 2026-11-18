@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vem de Story | Storymaker em Sorocaba</title>
+  <meta name="description" content="Storymaker em Sorocaba: cobertura de casamentos, festas infantis e eventos em vídeos para o Instagram. Peça seu orçamento pelo WhatsApp.">
+  <meta name="theme-color" content="#0c0a12">
+  <meta property="og:title" content="Vem de Story | Storymaker em Sorocaba">
+  <meta property="og:description" content="Transforme momentos em conteúdo que conecta.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/icone.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icone.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="setup-banner" id="setup-banner" hidden role="status"></div>
+
+<header class="header">
+  <div class="container header-in">
+    <a class="logo" href="#topo"><span data-site="brand">Vem de Story</span></a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#servicos">Serviços</a>
+      <a href="#trabalhos">Trabalhos</a>
+      <a href="#depoimentos" id="nav-testimonials" hidden>Depoimentos</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#perguntas">Perguntas</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="#contato" data-cta>Pedir orçamento</a>
+  </div>
+</header>
+
+<main id="topo">
+  <section class="hero">
+    <div class="container hero-in">
+      <span class="eyebrow" data-site="eyebrow"></span>
+      <h1 data-site="headline"></h1>
+      <p class="lead" data-site="subheadline"></p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contato" data-cta>Pedir orçamento</a>
+        <a class="btn btn-ghost" href="#trabalhos">Ver trabalhos</a>
+      </div>
+      <ul class="chips" aria-label="Tipos de evento"><li>Casamentos</li><li>Festas infantis</li><li>Eventos e marcas</li></ul>
+    </div>
+  </section>
+
+  <section class="section" id="servicos">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Serviços</span><h2>Cada momento merece ser lembrado</h2></div>
+      <div class="grid-3" id="services"></div>
+    </div>
+  </section>
+
+  <section class="section alt" id="trabalhos">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Trabalhos</span><h2>Um pouco do que já foi registrado</h2></div>
+      <div class="gallery" id="gallery"></div>
+      <p class="center"><a class="btn btn-ghost" id="insta-link" target="_blank" rel="noopener">Ver mais no Instagram</a></p>
+    </div>
+  </section>
+
+  <section class="section" id="depoimentos" hidden>
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Depoimentos</span><h2>Quem já contratou conta como foi</h2></div>
+      <div class="testimonials" id="testimonials"></div>
+    </div>
+  </section>
+
+  <section class="section" id="como-funciona">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Como funciona</span><h2>Simples, do primeiro contato ao grande dia</h2></div>
+      <ol class="steps" id="steps"></ol>
+    </div>
+  </section>
+
+  <section class="section alt" id="valores">
+    <div class="container narrow center">
+      <span class="eyebrow">Valores</span>
+      <h2>Sob orçamento</h2>
+      <p class="muted" data-site="priceNote"></p>
+      <a class="btn btn-primary" href="#contato" data-cta>Pedir orçamento</a>
+    </div>
+  </section>
+
+  <section class="section" id="perguntas">
+    <div class="container narrow">
+      <div class="section-head"><span class="eyebrow">Perguntas frequentes</span><h2>Antes de chamar</h2></div>
+      <div id="faq"></div>
+    </div>
+  </section>
+
+  <section class="section alt" id="contato">
+    <div class="container two-col">
+      <div>
+        <span class="eyebrow">Contato</span>
+        <h2>Vamos registrar o seu evento?</h2>
+        <p class="muted">Conte os detalhes e responderemos pelo WhatsApp.</p>
+        <ul class="contact-list">
+          <li><span>WhatsApp</span><a id="c-wa" target="_blank" rel="noopener"></a></li>
+          <li><span>Instagram</span><a id="c-ig" target="_blank" rel="noopener"></a></li>
+          <li data-row="email"><span>E-mail</span><a id="c-mail"></a></li>
+        </ul>
+      </div>
+      <form class="form" id="contact-form" novalidate>
+        <label>Seu nome<input name="nome" autocomplete="name" required maxlength="80"></label>
+        <label>Tipo de evento
+          <select name="tipo"><option>Casamento</option><option>Festa infantil</option><option>Evento ou marca</option><option>Outro</option></select>
+        </label>
+        <label>Data e local (se já souber)<input name="detalhes" maxlength="160" placeholder="Ex.: 15/03, em Sorocaba"></label>
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary" type="submit">Enviar pelo WhatsApp</button>
+        <p class="fine">Ao enviar, abrimos o seu WhatsApp com a mensagem pronta. Este site não armazena o que você digita.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-in">
+    <p class="fine"><span data-site="brand"></span> · <span data-site="city"></span> <span data-site="responsible" data-optional></span> <span data-site="cnpj" data-optional></span></p>
+    <p class="fine">Site criado por GTech Digital Studio.</p>
+  </div>
+</footer>
+
+<a class="float-wa" href="#contato" data-cta aria-label="Falar no WhatsApp">WhatsApp</a>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

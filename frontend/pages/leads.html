@@ -1,0 +1,54 @@
+<div class="page-head">
+  <div>
+    <h1>Leads</h1>
+    <p>Gerencie todos os leads cadastrados: pesquise, filtre, edite e exporte.</p>
+  </div>
+  <div class="page-head-actions">
+    <button class="btn" id="export-btn"><i data-lucide="download" class="icon icon-sm"></i>Exportar CSV</button>
+    <button class="btn btn-primary" id="add-btn"><i data-lucide="plus" class="icon icon-sm"></i>Novo lead</button>
+  </div>
+</div>
+
+<section class="card">
+  <div class="toolbar">
+    <div class="input-icon">
+      <i data-lucide="search" class="icon"></i>
+      <input class="input" id="f-search" type="search" placeholder="Pesquisar por nome da empresa ou responsável..." aria-label="Pesquisar leads">
+    </div>
+    <select class="select" id="f-segment" aria-label="Filtrar por segmento"><option value="">Todos os segmentos</option></select>
+    <select class="select" id="f-city" aria-label="Filtrar por cidade"><option value="">Todas as cidades</option></select>
+    <select class="select" id="f-priority" aria-label="Filtrar por prioridade"><option value="">Toda prioridade</option></select>
+    <select class="select" id="f-status" aria-label="Filtrar por status"><option value="">Todos os status</option></select>
+    <select class="select" id="f-landing" aria-label="Filtrar por landing page"><option value="">Qualquer landing page</option></select>
+    <select class="select" id="f-sort" aria-label="Ordenar">
+      <option value="created_desc">Mais recentes</option>
+      <option value="created_asc">Mais antigos</option>
+      <option value="score_desc">Maior pontuação</option>
+      <option value="score_asc">Menor pontuação</option>
+      <option value="name_asc">Nome (A–Z)</option>
+    </select>
+    <button class="btn btn-ghost btn-sm" id="f-clear" hidden><i data-lucide="x" class="icon icon-sm"></i>Limpar filtros</button>
+  </div>
+
+  <div class="table-wrap">
+    <table class="table" id="leads-table">
+      <thead>
+        <tr>
+          <th>Empresa</th>
+          <th class="hide-sm">Segmento</th>
+          <th class="hide-sm">Cidade</th>
+          <th class="hide-sm">Contato</th>
+          <th class="hide-sm">Landing page</th>
+          <th>Prioridade</th>
+          <th class="hide-sm">Pontuação</th>
+          <th>Estágio</th>
+          <th class="hide-sm">Cadastro</th>
+          <th style="width:1%"><span class="sr-only">Ações</span></th>
+        </tr>
+      </thead>
+      <tbody id="leads-body"></tbody>
+    </table>
+  </div>
+  <div id="leads-state"></div>
+  <div class="pagination" id="pagination" hidden></div>
+</section>

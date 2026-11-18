@@ -1,0 +1,52 @@
+<div class="page-head">
+  <div>
+    <h1>Relatórios</h1>
+    <p id="rep-sub">Análise dos leads cadastrados no período selecionado.</p>
+  </div>
+  <div class="page-head-actions">
+    <select class="select" id="rep-days" style="width:auto" aria-label="Período do relatório">
+      <option value="7">Últimos 7 dias</option>
+      <option value="30">Últimos 30 dias</option>
+      <option value="90" selected>Últimos 90 dias</option>
+      <option value="365">Últimos 12 meses</option>
+      <option value="0">Todo o período</option>
+    </select>
+    <button class="btn" id="rep-refresh"><i data-lucide="refresh-cw" class="icon icon-sm"></i>Atualizar</button>
+  </div>
+</div>
+
+<div id="rep-state"></div>
+<section class="grid grid-kpi" id="rep-kpis"></section>
+
+<div class="grid grid-main" style="margin-top:16px">
+  <section class="card">
+    <div class="card-head"><div><h2>Leads cadastrados por período</h2><p id="rep-period-sub"></p></div></div>
+    <div class="card-body"><div class="chart-box"><canvas id="rep-chart-period" role="img" aria-label="Leads cadastrados por período"></canvas><div class="chart-empty" id="rep-period-empty" hidden>Sem leads no período.</div></div></div>
+  </section>
+  <section class="card">
+    <div class="card-head"><div><h2>Funil comercial</h2><p>Leads por estágio atual</p></div></div>
+    <div class="card-body" id="rep-funnel"></div>
+  </section>
+</div>
+
+<div class="grid grid-2" style="margin-top:16px">
+  <section class="card">
+    <div class="card-head"><div><h2>Leads por segmento</h2><p>Top 10 segmentos</p></div></div>
+    <div class="card-body"><div class="chart-box tall"><canvas id="rep-chart-segment" role="img" aria-label="Leads por segmento"></canvas><div class="chart-empty" id="rep-segment-empty" hidden>Sem dados de segmento.</div></div></div>
+  </section>
+  <section class="card">
+    <div class="card-head"><div><h2>Leads por região</h2><p>Top 10 estados</p></div></div>
+    <div class="card-body"><div class="chart-box tall"><canvas id="rep-chart-region" role="img" aria-label="Leads por estado"></canvas><div class="chart-empty" id="rep-region-empty" hidden>Sem dados de região.</div></div></div>
+  </section>
+</div>
+
+<div class="grid grid-2" style="margin-top:16px">
+  <section class="card">
+    <div class="card-head"><div><h2>Clientes fechados</h2><p>Negócios ganhos dos leads do período</p></div></div>
+    <div class="table-wrap" style="margin-top:12px" id="rep-closed"></div>
+  </section>
+  <section class="card">
+    <div class="card-head"><div><h2>Histórico de prospecção</h2><p>Últimas pesquisas do agente</p></div><a class="btn btn-sm" href="#/prospeccao">Abrir prospecção</a></div>
+    <div class="table-wrap" style="margin-top:12px" id="rep-history"></div>
+  </section>
+</div>

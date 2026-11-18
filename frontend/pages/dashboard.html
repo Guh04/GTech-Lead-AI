@@ -1,0 +1,56 @@
+<div class="page-head">
+  <div>
+    <h1>Dashboard</h1>
+    <p>Visão geral da sua prospecção e do funil comercial, calculada a partir dos leads cadastrados.</p>
+  </div>
+  <div class="page-head-actions">
+    <button class="btn" id="dash-refresh"><i data-lucide="refresh-cw" class="icon icon-sm"></i>Atualizar</button>
+  </div>
+</div>
+
+<div id="dash-state"></div>
+
+<section class="grid grid-kpi7" id="kpis" aria-label="Indicadores"></section>
+
+<div class="grid grid-main" style="margin-top:16px">
+  <section class="card">
+    <div class="card-head">
+      <div><h2>Leads por período</h2><p>Leads cadastrados por dia</p></div>
+      <select class="select" id="dash-days" style="width:auto" aria-label="Período">
+        <option value="7">Últimos 7 dias</option>
+        <option value="30" selected>Últimos 30 dias</option>
+        <option value="90">Últimos 90 dias</option>
+      </select>
+    </div>
+    <div class="card-body">
+      <div class="chart-box"><canvas id="chart-period" role="img" aria-label="Gráfico de leads cadastrados por período"></canvas><div class="chart-empty" id="chart-period-empty" hidden></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><div><h2>Taxa de conversão comercial</h2><p>Clientes fechados ÷ total de leads</p></div></div>
+    <div class="card-body" id="conversion"></div>
+  </section>
+</div>
+
+<div class="grid grid-2" style="margin-top:16px">
+  <section class="card">
+    <div class="card-head"><div><h2>Leads por segmento</h2><p>Principais segmentos cadastrados</p></div></div>
+    <div class="card-body">
+      <div class="chart-box"><canvas id="chart-segment" role="img" aria-label="Gráfico de leads por segmento"></canvas><div class="chart-empty" id="chart-segment-empty" hidden></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><div><h2>Atividades recentes</h2><p>Últimos eventos nos seus leads</p></div></div>
+    <div style="padding-top:8px" id="activities"></div>
+  </section>
+</div>
+
+<section class="card" style="margin-top:16px">
+  <div class="card-head">
+    <div><h2>Últimos leads adicionados</h2><p>Os 8 cadastros mais recentes</p></div>
+    <a class="btn btn-sm" href="#/leads">Ver todos</a>
+  </div>
+  <div class="table-wrap" style="margin-top:12px" id="latest"></div>
+</section>

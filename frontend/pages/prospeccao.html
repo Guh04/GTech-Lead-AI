@@ -1,0 +1,76 @@
+<div class="page-head">
+  <div>
+    <h1>Prospecção</h1>
+    <p>Defina região, segmentos e filtros para encontrar empresas com potencial para landing pages. Somente informações comerciais públicas são utilizadas.</p>
+  </div>
+</div>
+
+<div id="agent-status" style="margin-bottom:16px"></div>
+
+<div class="prosp-layout">
+  <section class="card">
+    <div class="card-head"><div><h2>Nova pesquisa</h2><p>Parâmetros da busca</p></div></div>
+    <form class="card-body" id="prosp-form" novalidate>
+      <div class="stack" style="gap:18px">
+        <div class="alert" data-tone="error" id="prosp-error" hidden></div>
+
+        <div class="form-grid" style="grid-template-columns:minmax(0,1fr) 110px">
+          <div class="field">
+            <label for="p-region">Cidade ou região<span class="req">*</span></label>
+            <input class="input" id="p-region" name="region" maxlength="200" placeholder="Ex.: Campinas, Grande São Paulo" autocomplete="off" required>
+          </div>
+          <div class="field">
+            <label for="p-state">Estado</label>
+            <select class="select" id="p-state" name="state"><option value="">—</option></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field-label">Segmentos<span class="req">*</span></span>
+          <div class="chips" id="p-chips" role="group" aria-label="Segmentos"></div>
+          <div class="row" style="margin-top:6px;flex-wrap:nowrap">
+            <input class="input" id="p-custom" maxlength="120" placeholder="Adicionar outro segmento" autocomplete="off">
+            <button type="button" class="btn" id="p-add"><i data-lucide="plus" class="icon icon-sm"></i>Adicionar</button>
+          </div>
+          <span class="hint" id="p-selected-hint">Nenhum segmento selecionado.</span>
+        </div>
+
+        <div class="field">
+          <label for="p-qty">Quantidade desejada de leads</label>
+          <div class="range-row"><input type="range" id="p-qty" min="5" max="200" step="5" value="30"><output id="p-qty-out" for="p-qty">30</output></div>
+        </div>
+
+        <div class="field">
+          <span class="field-label">Empresas com ou sem site</span>
+          <div class="seg-group" id="p-site">
+            <label><input type="radio" name="website_filter" value="any" checked>Todas</label>
+            <label><input type="radio" name="website_filter" value="with_site">Com site</label>
+            <label><input type="radio" name="website_filter" value="without_site">Sem site</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="p-landing">Situação da landing page</label>
+          <select class="select" id="p-landing" name="landing_filter"></select>
+        </div>
+
+        <button class="btn btn-primary" type="submit" id="p-submit" style="height:42px"><i data-lucide="radar" class="icon icon-sm"></i>Iniciar pesquisa</button>
+        <p class="faint" style="font-size:12px"><i data-lucide="shield-check" class="icon icon-sm" style="display:inline;vertical-align:-3px"></i>
+          Conformidade com a LGPD: apenas dados comerciais públicos; cada lead guarda a fonte. Nenhuma mensagem é enviada automaticamente — toda abordagem depende da sua aprovação.</p>
+      </div>
+    </form>
+  </section>
+
+  <div class="stack">
+    <section class="card">
+      <div class="card-head"><div><h2 id="results-title">Resultados encontrados</h2><p id="results-sub">Os leads encontrados em uma pesquisa aparecem aqui.</p></div></div>
+      <div class="table-wrap" style="margin-top:12px" id="results"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><div><h2>Histórico de pesquisas</h2><p>Clique em uma pesquisa para ver os leads encontrados</p></div>
+        <button class="btn btn-sm" id="hist-refresh"><i data-lucide="refresh-cw" class="icon icon-sm"></i>Atualizar</button></div>
+      <div class="table-wrap" style="margin-top:12px" id="history"></div>
+    </section>
+  </div>
+</div>

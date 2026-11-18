@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b0f19">
+  <title>GTech Lead AI</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- ===================== Tela de entrada (login / configuração) ===================== -->
+  <div class="auth-view" id="auth-view" hidden>
+    <div class="auth-card" id="auth-card"></div>
+  </div>
+
+  <!-- ===================== Aplicação ===================== -->
+  <div class="app" id="app" hidden>
+
+    <aside class="sidebar" id="sidebar" aria-label="Menu principal">
+      <div class="brand">
+        <img src="assets/logo.svg" alt="" width="34" height="34">
+        <div>
+          <div class="brand-name">GTech <span>Lead AI</span></div>
+          <div class="brand-tag">Inteligência comercial</div>
+        </div>
+      </div>
+
+      <nav class="nav" id="nav">
+        <div class="nav-label">Visão geral</div>
+        <a class="nav-link" href="#/dashboard" data-route="dashboard"><i data-lucide="layout-dashboard" class="icon"></i>Dashboard</a>
+
+        <div class="nav-label">Comercial</div>
+        <a class="nav-link" href="#/leads" data-route="leads"><i data-lucide="users" class="icon"></i>Leads</a>
+        <a class="nav-link" href="#/oportunidades" data-route="oportunidades"><i data-lucide="flame" class="icon"></i>Oportunidades</a>
+        <a class="nav-link" href="#/pipeline" data-route="pipeline"><i data-lucide="kanban" class="icon"></i>Pipeline</a>
+
+        <div class="nav-label">Inteligência</div>
+        <a class="nav-link" href="#/prospeccao" data-route="prospeccao"><i data-lucide="radar" class="icon"></i>Prospecção</a>
+        <a class="nav-link" href="#/relatorios" data-route="relatorios"><i data-lucide="chart-no-axes-combined" class="icon"></i>Relatórios</a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="user-chip">
+          <div class="avatar" id="user-avatar">?</div>
+          <div class="user-meta">
+            <strong class="truncate" id="user-name">—</strong>
+            <span class="truncate" id="user-email"></span>
+          </div>
+          <button class="btn btn-ghost btn-icon btn-sm" id="logout-btn" title="Sair" aria-label="Sair">
+            <i data-lucide="log-out" class="icon icon-sm"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost btn-icon menu-toggle" id="menu-toggle" aria-label="Abrir menu">
+          <i data-lucide="menu" class="icon"></i>
+        </button>
+        <div class="topbar-title">
+          <div class="topbar-system"><b>GTech Lead AI</b> · Painel comercial</div>
+          <div class="topbar-page" id="topbar-page">Dashboard</div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" id="new-lead-btn">
+            <i data-lucide="plus" class="icon icon-sm"></i><span class="hide-sm">Novo lead</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="content" id="view" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <div id="overlay-root"></div>
+
+  <script src="assets/vendor/lucide.min.js"></script>
+  <script src="assets/vendor/chart.umd.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
