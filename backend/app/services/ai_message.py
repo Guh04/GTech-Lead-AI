@@ -37,11 +37,17 @@ SYSTEM_PROMPT = (
 
 def model_text(settings: Settings) -> str:
     name = settings.outreach_sender_name.strip()
-    offer = settings.outreach_offer.strip()
-    text = MODEL.format(name=name, offer=offer)
-    if not name:  # sem nome configurado: "Meu nome é , trabalho com..." ficaria errado
-        text = text.replace("Meu nome é , trabalho", "Trabalho")
-    return text
+    company = settings.outreach_sender_company.strip()
+    # Apresentação gramatical para qualquer combinação de nome/empresa configurados.
+    if name and company:
+        intro = f"Meu nome é {name}, da {company}, e trabalho"
+    elif name:
+        intro = f"Meu nome é {name} e trabalho"
+    elif company:
+        intro = f"Sou da {company} e trabalho"
+    else:
+        intro = "Trabalho"
+    return MODEL.format(intro=intro, offer=settings.outreach_offer.strip())
 
 
 def finish(text: str, settings: Settings) -> str:
