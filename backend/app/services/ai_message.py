@@ -52,18 +52,12 @@ def facts(lead: dict, settings: Settings) -> str:
 def template_message(lead: dict, settings: Settings) -> str:
     sender = settings.outreach_sender_name.strip()
     who = f"{sender} da {settings.outreach_sender_company}" if sender else f"da {settings.outreach_sender_company}"
-    segment = lead.get("segment")
-    context = f"Vi que a {lead['company_name']} atua com {segment.lower()}" if segment else f"Encontrei a {lead['company_name']}"
-    if lead.get("city"):
-        context += f" em {lead['city']}"
-    context += "."
     hook = {
-        "none": "Percebi que vocês ainda não têm um site próprio, e hoje isso faz diferença para ser encontrado.",
-        "site_only": "Um site já existe, mas uma landing page focada em conversão pode trazer mais contatos.",
+        "none": "e vi que vocês ainda não têm site",
+        "site_only": "e vi que dá pra turbinar o site de vocês",
     }.get(lead.get("landing_page_status"), "")
-    parts = [f"Olá! Tudo bem? Aqui é {who}.", context, hook, f"Trabalho com {settings.outreach_offer}.",
-             "Posso te mandar uma ideia rápida de como ficaria para o seu negócio?"]
-    return finish(" ".join(p for p in parts if p))
+    seen = f"Vi a {lead['company_name']}" + (f" {hook}" if hook else "")
+    return finish(f"Oi, tudo bem? Aqui é {who}. {seen}. Posso te mandar uma ideia rápida?")
 
 
 def finish(text: str) -> str:
