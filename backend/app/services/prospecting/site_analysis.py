@@ -123,6 +123,7 @@ class _PageParser(HTMLParser):
         self._in_title = False
         self._in_button = False
         self._in_a = False
+        self.hrefs: list[str] = []  # todos os links da página (para extrair contatos)
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -138,6 +139,8 @@ class _PageParser(HTMLParser):
             self._in_button = True
         elif tag == "a":
             self._in_a = True
+            if len(self.hrefs) < 400 and a.get("href"):
+                self.hrefs.append(a["href"].strip())
             href = (a.get("href") or "").strip().lower()
             if href.startswith(("tel:", "mailto:")) or re.search(r"wa\.me/|api\.whatsapp\.com|wa\.link/|whatsapp://", href):
                 self.cta_links += 1
