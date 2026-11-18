@@ -272,3 +272,14 @@ def test_template_without_sender_name_stays_grammatical(make_client, ana):
     ids = make_leads(c, ana, 1)
     body = c.post(f"/api/outreach/quick/{ids[0]}", headers=ana).json()["message"]["body"]
     assert "Meu nome é" not in body and "\n\nSou da GTech Digital Studio e trabalho com criação de landing pages" in body
+
+
+def test_discarded_messages_can_be_regenerated(client, ana):
+    make_leads(client, ana, 2)
+    first = generate(client, ana).json()["items"]
+    assert len(first) == 2
+    for m in first:
+        assert client.post(f"/api/outreach/{m['id']}/skip", headers=ana).status_code == 200
+    again = generate(client, ana)
+    assert again.json()["created"] == 2  # descartar serve para refazer o texto
+    assert generate(client, ana).json()["created"] == 0  # e agora há pendentes: não duplica

@@ -56,6 +56,16 @@ class Settings(BaseSettings):
     # Linha final para quem não quer receber mensagens (boa conduta / LGPD). Vazio = não acrescenta.
     outreach_opt_out: str = "Se não quiser receber mensagens, é só avisar."
 
+    # WhatsMCP: envio real pelo WhatsApp conectado (servidor MCP sobre HTTP). Sem chave = abre o link wa.me.
+    whatsmcp_api_key: str = ""
+    whatsmcp_url: str = "https://api.whatsmcp.com/mcp"
+    whatsmcp_account_id: str = ""  # opcional: só necessário se houver mais de um número pareado
+    whatsmcp_timeout_seconds: float = 30.0
+
+    @property
+    def whatsmcp_configured(self) -> bool:
+        return bool(self.whatsmcp_api_key.strip())
+
     @property
     def supabase_configured(self) -> bool:
         return self.supabase_url.startswith(("http://", "https://")) and bool(self.supabase_anon_key.strip())
