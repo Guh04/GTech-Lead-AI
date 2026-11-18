@@ -325,7 +325,16 @@ def to_webp() -> None:
     dest = ROOT.parent / "site" / "assets" / "images"
     dest.mkdir(parents=True, exist_ok=True)
     for png in (SRC / "_site").glob("*.png"):
-        Image.open(png).convert("RGB").save(dest / (png.stem + ".webp"), "WEBP", quality=(78 if "tall" in png.stem else 84), method=6)
+        im = Image.open(png).convert("RGB")
+        if "tall" in png.stem:  # corta o espaço vazio depois do rodapé da página
+            px = im.load()
+            ref = px[im.width - 1, im.height - 1]
+            bottom = im.height - 1
+            while bottom > 0 and all(px[x, bottom] == ref for x in range(0, im.width, 7)):
+                bottom -= 1
+            im = im.crop((0, 0, im.width, min(im.height, bottom + round(im.width * 0.03))))
+            print("altura útil", png.stem, im.size)
+        im.save(dest / (png.stem + ".webp"), "WEBP", quality=(78 if "tall" in png.stem else 84), method=6)
         print("webp", (dest / (png.stem + ".webp")).name)
 
 

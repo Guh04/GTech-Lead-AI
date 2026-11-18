@@ -92,6 +92,9 @@
   const label = $('[data-rotate-label]');
   if (rotators.length) {
     const count = $$('img', rotators[0]).length;
+    // As telas seguintes carregam em segundo plano logo após a abertura, para a troca nunca mostrar tela vazia.
+    const warm = () => rotators.forEach((box) => $$('img', box).forEach((im) => { im.loading = 'eager'; }));
+    if (document.readyState === 'complete') warm(); else addEventListener('load', warm, { once: true });
     const show = (idx) => {
       rotators.forEach((box) => {
         $$('img', box).forEach((im, k) => {
