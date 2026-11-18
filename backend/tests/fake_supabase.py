@@ -44,6 +44,15 @@ class FakeSupabase:
         self.nominatim_handler = lambda request: httpx.Response(200, json=[{"osm_type": "relation", "osm_id": 123, "category": "boundary", "type": "administrative"}])
         self.places_handler = lambda request: httpx.Response(200, json={})  # Google Places simulado
         self.web_handler = lambda request: httpx.Response(404)  # sites das empresas (domínios *.example)
+        self.whatsmcp_calls: list[dict] = []
+
+        def whatsmcp(request: httpx.Request):  # WhatsMCP simulado: wa_send_message sempre "sent"
+            body = json.loads(request.content)
+            self.whatsmcp_calls.append({"auth": request.headers.get("authorization"), "args": body["params"]["arguments"]})
+            out = {"status": "sent", "message_id": "ABC"}
+            return httpx.Response(200, json={"jsonrpc": "2.0", "id": 1, "result": {"content": [{"type": "text", "text": json.dumps(out)}], "structuredContent": out}})
+
+        self.whatsmcp_handler = whatsmcp
         self.anthropic_handler = lambda request: httpx.Response(200, json={"content": [{"type": "text", "text": "Olá! Mensagem da IA."}]})
 
     # ------------------------------------------------------------------ helpers
