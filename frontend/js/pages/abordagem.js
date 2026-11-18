@@ -55,6 +55,7 @@ export async function mount(view) {
           <strong>${status.sent_today} de ${status.daily_limit} envios hoje${reached ? ' · limite atingido, continue amanhã' : ''}</strong>
           <div style="height:6px;border-radius:6px;background:var(--input);margin:8px 0;overflow:hidden"><i style="display:block;height:100%;width:${pct}%;background:var(--blue)"></i></div>
           O limite diário e um intervalo mínimo de ${status.min_interval_seconds}s entre envios reduzem o risco de bloqueio do número.
+          ${status.auto_send ? html`<br><strong>Envio automático ativo:</strong> ao clicar em “Enviar”, a mensagem sai direto pelo WhatsApp conectado.` : ''}
           ${status.ai_configured ? '' : html`<br>Sem IA configurada: as mensagens usam texto-modelo. Defina ANTHROPIC_API_KEY em backend/.env para mensagens personalizadas.`}
         </div>
       </div>`);
