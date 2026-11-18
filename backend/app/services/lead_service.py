@@ -262,22 +262,24 @@ class LeadService:
         return now.replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc).isoformat()
 
     @staticmethod
-    def _cleanup_filters(cutoff: str) -> "list[Filter]":  # aspas: dentro da classe, `list` é o método list()
+    def _cleanup_filters(cutoff: str | None) -> "list[Filter]":  # aspas: dentro da classe, `list` é o método list()
         # Só apaga o que ainda não andou no funil e não pediu opt-out: quem já foi contatado (ou pediu para
         # não ser contatado) continua no banco, senão uma nova busca o traria de volta como "lead novo".
-        return [
-            ("created_at", f"lt.{cutoff}"),
+        # cutoff=None: sem limite de data (inclui os leads de hoje).
+        filters = [
             ("do_not_contact", "eq.false"),
             ("status", f"in.({LeadStatus.NEW.value},{LeadStatus.ANALYZED.value})"),
         ]
+        return [("created_at", f"lt.{cutoff}"), *filters] if cutoff else filters
 
-    async def cleanup_preview(self, cutoff: str) -> dict:
-        _, older = await self.db.select("leads", columns="id", filters=[("created_at", f"lt.{cutoff}")], limit=1, count=True)
+    async def cleanup_preview(self, cutoff: str | None) -> dict:
+        scope = [("created_at", f"lt.{cutoff}")] if cutoff else []
+        _, in_scope = await self.db.select("leads", columns="id", filters=scope, limit=1, count=True)
         _, deletable = await self.db.select("leads", columns="id", filters=self._cleanup_filters(cutoff), limit=1, count=True)
-        older, deletable = older or 0, deletable or 0
-        return {"deletable": deletable, "protected": max(0, older - deletable)}
+        in_scope, deletable = in_scope or 0, deletable or 0
+        return {"deletable": deletable, "protected": max(0, in_scope - deletable)}
 
-    async def cleanup(self, cutoff: str) -> dict:
+    async def cleanup(self, cutoff: str | None) -> dict:
         rows = await self.db.delete("leads", self._cleanup_filters(cutoff))
         return {"deleted": len(rows)}
 
