@@ -10,6 +10,7 @@ def make_settings(**overrides) -> Settings:
     base = dict(
         supabase_url=SUPABASE_URL, supabase_anon_key=ANON_KEY, app_env="development", app_timezone="America/Sao_Paulo",
         cors_origins="", prospecting_api_url="", prospecting_api_key="", prospecting_timeout_seconds=5, osm_enabled=False, osm_retry_delay_seconds=0,
+        anthropic_api_key="", outreach_daily_limit=20, outreach_min_interval_seconds=0,
     )
     # _env_file=None: os testes nunca leem o backend/.env real do usuário
     return Settings(_env_file=None, **{**base, **overrides})
