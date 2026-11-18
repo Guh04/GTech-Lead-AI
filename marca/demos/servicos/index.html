@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prumo Serviços Prediais | Projeto conceitual</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#111827;--mut:#5b6472;--line:#e5e7eb;--bg:#f3f4f6;--a:#f59e0b;--navy:#0f1f3d}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font:16px/1.65 Manrope,system-ui,sans-serif;color:var(--ink);background:#fff}
+a{color:inherit;text-decoration:none}.w{width:min(100% - 40px,1160px);margin-inline:auto}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em;line-height:1.08;margin:0}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}.brand{font-weight:800;font-size:1.35rem;display:flex;align-items:center;gap:10px}
+.brand i{width:28px;height:28px;background:var(--navy);display:grid;place-items:center;border-radius:8px}.brand i:after{content:"";width:6px;height:16px;background:var(--a);border-radius:2px}
+.links{display:flex;gap:30px;font-weight:600;font-size:.92rem;color:var(--mut)}.btn{display:inline-flex;background:var(--a);color:#1b1304;padding:14px 26px;border-radius:12px;font-weight:700}
+.btn:hover{filter:brightness(.95)}.btn.d{background:var(--navy);color:#fff}.btn.o{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:#fff}
+.hero{background:var(--navy);color:#fff;border-radius:0 0 40px 40px}.hero .in{display:grid;grid-template-columns:1.2fr .8fr;gap:50px;align-items:center;padding:72px 0 88px}
+.k{color:var(--a);font-weight:700;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:18px}
+h1{font-size:clamp(2.4rem,5.2vw,4rem)}.lead{color:#c3cbdb;font-size:1.1rem;max-width:46ch;margin:22px 0 30px}.act{display:flex;gap:12px;flex-wrap:wrap}
+.qt{background:#fff;color:var(--ink);border-radius:24px;padding:28px}.qt h3{font-size:1.3rem;margin-bottom:6px}.qt p{margin:0 0 16px;color:var(--mut);font-size:.92rem}
+.qt ul{list-style:none;padding:0;margin:0 0 18px;display:grid;gap:8px}.qt li{display:flex;justify-content:space-between;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:600;font-size:.92rem}
+.qt li span{color:var(--mut);font-weight:500}.qt .btn{width:100%;justify-content:center}
+section{padding:88px 0}.hd{max-width:600px;margin-bottom:44px}.hd h2{font-size:clamp(2rem,4vw,2.9rem)}.hd p{color:var(--mut);margin:14px 0 0}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.sv{border:1px solid var(--line);border-radius:20px;padding:26px;background:#fff;transition:.2s}
+.sv:hover{border-color:var(--navy);transform:translateY(-3px)}.sv .ic{width:42px;height:42px;border-radius:12px;background:#fff4de;margin-bottom:16px;position:relative}.sv .ic:after{content:"";position:absolute;inset:12px;border-radius:4px;background:var(--a)}
+.sv h3{font-size:1.15rem;margin-bottom:8px}.sv p{margin:0;color:var(--mut);font-size:.92rem}
+.band{background:var(--bg)}.row{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}.row div{border-left:3px solid var(--a);padding-left:20px}.row b{display:block;font-size:1.15rem;margin-bottom:6px}.row p{margin:0;color:var(--mut);font-size:.95rem}
+.cta{background:var(--a);border-radius:28px;padding:56px;display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap}.cta h2{font-size:clamp(1.8rem,3.4vw,2.5rem);max-width:20ch}
+footer{padding:36px 0;color:var(--mut);font-size:.85rem;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+@media(max-width:900px){.hero .in,.g4,.row{grid-template-columns:1fr}.links{display:none}.cta{padding:34px 26px}}
+</style></head><body>
+<div class="hero"><div class="w"><nav class="nav"><a class="brand" href="#"><i></i>Prumo</a><div class="links" style="color:#aab4c8"><a href="#servicos">Serviços</a><a href="#como">Como trabalhamos</a><a href="#orcamento">Contato</a></div><a class="btn" href="#orcamento">Pedir orçamento</a></nav>
+<div class="in"><div><span class="k">Serviços prediais e manutenção</span><h1>Manutenção bem feita, do orçamento à entrega.</h1>
+<p class="lead">Atendimento para condomínios, empresas e residências, com visita técnica, orçamento por escrito e prazo combinado.</p>
+<div class="act"><a class="btn" href="#orcamento">Pedir orçamento</a><a class="btn o" href="#servicos">Ver serviços</a></div></div>
+<aside class="qt" id="orcamento"><h3>Peça seu orçamento</h3><p>Conte o que precisa e retornamos pelo WhatsApp.</p><ul><li>Tipo de serviço <span>Elétrica</span></li><li>Local <span>Residência</span></li><li>Urgência <span>Esta semana</span></li></ul><a class="btn d" href="#">Solicitar orçamento</a></aside></div></div></div>
+<section id="servicos"><div class="w"><div class="hd"><h2>Serviços</h2><p>Áreas de atendimento apresentadas de forma direta, cada uma com chamada para orçamento.</p></div>
+<div class="g4"><div class="sv"><div class="ic"></div><h3>Elétrica</h3><p>Instalações, reparos e adequações.</p></div><div class="sv"><div class="ic"></div><h3>Hidráulica</h3><p>Vazamentos, manutenção e instalação.</p></div>
+<div class="sv"><div class="ic"></div><h3>Pintura</h3><p>Acabamento limpo, interno e externo.</p></div><div class="sv"><div class="ic"></div><h3>Reformas</h3><p>Pequenas obras e melhorias.</p></div></div></div></section>
+<section class="band" id="como"><div class="w"><div class="hd"><h2>Como trabalhamos</h2></div>
+<div class="row"><div><b>1. Visita técnica</b><p>Entendemos o serviço no local.</p></div><div><b>2. Orçamento por escrito</b><p>Valores e prazo claros antes de começar.</p></div><div><b>3. Execução e entrega</b><p>Serviço realizado e conferido com você.</p></div></div></div></section>
+<section><div class="w"><div class="cta"><h2>Precisa de um serviço? Peça o orçamento agora.</h2><a class="btn d" href="#orcamento">Pedir orçamento</a></div></div></section>
+<div class="w"><footer><span>Prumo Serviços Prediais — nome fictício</span><span>Projeto conceitual desenvolvido pela GTech Digital Studio</span></footer></div>
+</body></html>
