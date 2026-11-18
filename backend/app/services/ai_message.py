@@ -58,7 +58,7 @@ def template_message(lead: dict, settings: Settings) -> str:
         "site_only": "e vi que dá pra turbinar o site de vocês",
     }.get(lead.get("landing_page_status"), "")
     seen = f"Vi a {lead['company_name']}" + (f" {hook}" if hook else "")
-    return finish(f"Oi, tudo bem? Aqui é {who}. {seen}. Posso te mandar uma ideia rápida?")
+    return finish(f"Oi, tudo bem? {who}. {seen}. Posso te mandar uma ideia rápida?")
 
 
 def finish(text: str) -> str:
