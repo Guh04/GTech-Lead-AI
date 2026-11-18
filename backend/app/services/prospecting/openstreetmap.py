@@ -52,6 +52,19 @@ SEGMENT_RULES: list[tuple[tuple[str, ...], list[tuple[str, str]]]] = [
     (("autoescola",), [("amenity", "driving_school")]),
     (("fotograf",), [("shop", "photo"), ("craft", "photographer")]),
     (("constru", "reforma"), [("craft", "builder"), ("office", "construction_company")]),
+    (("otica", "optic"), [("shop", "optician")]),
+    (("florist", "floricult"), [("shop", "florist")]),
+    (("cafeter", "cafe"), [("amenity", "cafe")]),
+    (("hotel", "pousada", "hospedag"), [("tourism", "hotel"), ("tourism", "guest_house")]),
+    (("tatuag", "tattoo"), [("shop", "tattoo")]),
+    (("lava jato", "lava-jato", "lavagem"), [("amenity", "car_wash")]),
+    (("eletric",), [("craft", "electrician")]),
+    (("encanad", "hidraulic"), [("craft", "plumber")]),
+    (("marcenar", "movel", "moveis"), [("craft", "carpenter"), ("shop", "furniture")]),
+    (("supermerc", "mercado", "mercearia"), [("shop", "supermarket"), ("shop", "convenience")]),
+    (("roupa", "moda", "boutique"), [("shop", "clothes"), ("shop", "boutique")]),
+    (("material de construcao", "ferragem"), [("shop", "doityourself"), ("shop", "hardware")]),
+    (("clinica veterin",), [("amenity", "veterinary")]),
 ]
 
 
