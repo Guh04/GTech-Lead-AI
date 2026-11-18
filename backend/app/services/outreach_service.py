@@ -116,6 +116,9 @@ class OutreachService:
             ("whatsapp", "not.is.null"),
             ("do_not_contact", "eq.false"),
             ("status", f"in.({LeadStatus.NEW.value},{LeadStatus.ANALYZED.value})"),
+            # A oferta é criar o site: só abordamos quem não tem site nem landing page.
+            ("landing_page_status", f"eq.{LandingStatus.NONE.value}"),
+            ("website", "is.null"),
         ]
         if search_id:
             filters.append(("prospecting_search_id", f"eq.{search_id}"))
