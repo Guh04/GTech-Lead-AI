@@ -363,3 +363,24 @@ def test_generate_only_targets_leads_without_site_or_landing_page(client, ana):
     assert res["created"] == 1 and res["items"][0]["lead_id"]
     names = {m["lead"]["company_name"] for m in client.get("/api/outreach", headers=ana).json()}
     assert names == {"Empresa 0"}
+
+
+# ---------------------------------------------------------------- demonstração por lead
+def test_demo_zip_is_built_from_lead_and_escapes_input(client, ana):
+    import io
+    import zipfile
+
+    r = client.post("/api/leads", json=lead(company_name='Barbearia <script>alert(1)</script> "Top"', segment="Barbearia", city="Sorocaba", state="SP", whatsapp="15999990000", instagram="@barbtop"), headers=ana)
+    assert r.status_code == 201, r.text
+    res = client.get(f"/api/leads/{r.json()['id']}/demo", headers=ana)
+    assert res.status_code == 200 and res.headers["content-type"] == "application/zip"
+    assert res.headers["content-disposition"].endswith('.zip"')
+    page = zipfile.ZipFile(io.BytesIO(res.content)).read("index.html").decode()
+    assert "<script>alert(1)</script>" not in page and "&lt;script&gt;" in page  # nada do lead entra sem escape
+    assert "wa.me/5515999990000" in page and "instagram.com/barbtop" in page
+    assert "Corte de cabelo" in page and "Esta não é a página oficial" in page  # aviso de demonstração
+
+
+def test_demo_requires_login_and_existing_lead(client, ana):
+    assert client.get("/api/leads/00000000-0000-0000-0000-000000000000/demo").status_code == 401
+    assert client.get("/api/leads/00000000-0000-0000-0000-000000000000/demo", headers=ana).status_code == 404

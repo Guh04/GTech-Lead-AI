@@ -30,7 +30,7 @@ export async function mount(view) {
       <td class="nowrap">${formatPhone(l.whatsapp)}</td>
       <td class="hide-sm">${priorityBadge(l.priority)}</td>
       <td class="hide-sm">${statusBadge(l.status)}</td>
-      <td style="text-align:right">${callBtn(l)}</td>
+      <td style="text-align:right"><div class="row" style="justify-content:flex-end;gap:6px"><button class="btn btn-sm" data-act="demo" data-id="${l.id}" data-name="${l.company_name}" title="Baixar uma página de demonstração com o nome desta empresa">${icon('download', 'icon-sm')}Demo</button>${callBtn(l)}</div></td>
     </tr>`;
   }
 
@@ -175,6 +175,12 @@ export async function mount(view) {
           }
           if ($('#ct-only-new', view).checked) removeRow(id);
           startWait(res.status.wait_seconds || status.min_interval_seconds);
+          break;
+        }
+        case 'demo': {
+          const name = (btn.dataset.name || 'empresa').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'empresa';
+          await withLoading(btn, () => api.download(`/leads/${id}/demo`, undefined, `demo-${name}.zip`));
+          toast('Demo baixada. Arraste o ZIP em netlify.com/drop para gerar o link e envie ao lead.', 'success');
           break;
         }
         case 'use-phone': {
