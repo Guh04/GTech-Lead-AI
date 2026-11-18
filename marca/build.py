@@ -303,9 +303,28 @@ def build_presentations() -> None:
 
 
 def build_telas() -> None:
+    """Capturas dos sites demonstrativos (fonte única: site/projetos).
+
+    - export/telas/*-desktop|mobile.png : página inteira, usadas nos posts e apresentações.
+    - site/assets/images/*.webp         : primeira dobra (viewport), usadas no portfólio do site.
+    """
+    demos = ROOT.parent / "site" / "projetos"
     for k in PROJECTS:
-        JOBS.append((ROOT / "demos" / k / "index.html", OUT / "telas" / f"{k}-desktop.png", 1440, 1500, 1.0, None))
-        JOBS.append((ROOT / "demos" / k / "index.html", OUT / "telas" / f"{k}-mobile.png", 390, 1700, 2.0, None))
+        page_ = demos / k / "index.html"
+        JOBS.append((page_, OUT / "telas" / f"{k}-desktop.png", 1440, 1500, 1.0, None))
+        JOBS.append((page_, OUT / "telas" / f"{k}-mobile.png", 390, 1700, 2.0, None))
+        JOBS.append((page_, SRC / "_site" / f"{k}-desktop.png", 1440, 900, 1.0, None))
+        JOBS.append((page_, SRC / "_site" / f"{k}-mobile.png", 390, 844, 2.0, None))
+
+
+def to_webp() -> None:
+    """Converte as capturas do site para WebP (menores) em site/assets/images/."""
+    from PIL import Image
+    dest = ROOT.parent / "site" / "assets" / "images"
+    dest.mkdir(parents=True, exist_ok=True)
+    for png in (SRC / "_site").glob("*.png"):
+        Image.open(png).convert("RGB").save(dest / (png.stem + ".webp"), "WEBP", quality=84, method=6)
+        print("webp", (dest / (png.stem + ".webp")).name)
 
 
 STEPS = {"telas": build_telas, "logos": build_logos, "destaques": build_destaques, "posts": build_posts,
@@ -321,6 +340,8 @@ if __name__ == "__main__":
     for name in [s for s in STEPS if s in chosen and s != "feed"]:
         STEPS[name]()
         run_jobs()
+        if name == "telas":
+            to_webp()
     if "feed" in chosen:
         build_feed()
         run_jobs()
