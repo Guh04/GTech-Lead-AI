@@ -44,6 +44,7 @@ class FakeSupabase:
         self.nominatim_handler = lambda request: httpx.Response(200, json=[{"osm_type": "relation", "osm_id": 123, "category": "boundary", "type": "administrative"}])
         self.places_handler = lambda request: httpx.Response(200, json={})  # Google Places simulado
         self.web_handler = lambda request: httpx.Response(404)  # sites das empresas (domínios *.example)
+        self.anthropic_handler = lambda request: httpx.Response(200, json={"content": [{"type": "text", "text": "Olá! Mensagem da IA."}]})
 
     # ------------------------------------------------------------------ helpers
     def add_user(self, email: str, password: str = "senha-segura") -> str:
