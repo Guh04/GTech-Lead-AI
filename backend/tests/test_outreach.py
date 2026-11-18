@@ -283,3 +283,67 @@ def test_discarded_messages_can_be_regenerated(client, ana):
     again = generate(client, ana)
     assert again.json()["created"] == 2  # descartar serve para refazer o texto
     assert generate(client, ana).json()["created"] == 0  # e agora há pendentes: não duplica
+
+
+# ---------------------------------------------------------------- envio real pelo WhatsMCP
+def _mcp_reply(out, is_error=False):
+    return httpx.Response(200, json={"jsonrpc": "2.0", "id": 1, "result": {"content": [{"type": "text", "text": json.dumps(out)}], "structuredContent": out, "isError": is_error}})
+
+
+def test_whatsmcp_sends_for_real_instead_of_opening_link(make_client, ana, fake):
+    c = make_client(whatsmcp_api_key="wamcp_live_test")
+    ids = make_leads(c, ana, 1)
+    assert c.get("/api/outreach/status", headers=ana).json()["auto_send"] is True
+    mid = generate(c, ana).json()["items"][0]["id"]
+    data = approve_and_send(c, ana, mid).json()
+    assert data["delivery"] == "sent" and data["whatsapp_url"] is None
+    call = fake.whatsmcp_calls[0]
+    assert call["auth"] == "Bearer wamcp_live_test"
+    assert call["args"]["to"] == "5511999990000" and call["args"]["force"] is True
+    assert call["args"]["text"] == data["message"]["body"]
+    assert data["message"]["status"] == "sent" and data["status"]["sent_today"] == 1
+    assert c.get(f"/api/leads/{ids[0]}", headers=ana).json()["status"] == "contacted"
+
+
+def test_whatsmcp_refusal_keeps_message_approved_and_does_not_count(make_client, ana, fake):
+    fake.whatsmcp_handler = lambda request: _mcp_reply({"status": "refused", "reason": "rate_limited"})
+    c = make_client(whatsmcp_api_key="wamcp_live_test")
+    ids = make_leads(c, ana, 1)
+    mid = generate(c, ana).json()["items"][0]["id"]
+    r = approve_and_send(c, ana, mid)
+    assert r.status_code == 502 and r.json()["error"]["code"] == "whatsapp_send_failed"
+    msg = c.get("/api/outreach", params={"status": "approved"}, headers=ana).json()
+    assert len(msg) == 1 and msg[0]["sent_at"] is None
+    assert c.get("/api/outreach/status", headers=ana).json()["sent_today"] == 0
+    assert c.get(f"/api/leads/{ids[0]}", headers=ana).json()["status"] == "new"
+
+
+def test_whatsmcp_invalid_key_is_a_clear_error(make_client, ana, fake):
+    fake.whatsmcp_handler = lambda request: httpx.Response(401, json={})
+    c = make_client(whatsmcp_api_key="ruim")
+    make_leads(c, ana, 1)
+    mid = generate(c, ana).json()["items"][0]["id"]
+    r = approve_and_send(c, ana, mid)
+    assert r.status_code == 502 and "WHATSMCP_API_KEY" in r.json()["error"]["message"]
+
+
+def test_whatsmcp_timeout_never_resends(make_client, ana, fake):
+    def boom(request):
+        raise httpx.ReadTimeout("lento")
+
+    fake.whatsmcp_handler = boom
+    c = make_client(whatsmcp_api_key="wamcp_live_test")
+    make_leads(c, ana, 1)
+    mid = generate(c, ana).json()["items"][0]["id"]
+    data = approve_and_send(c, ana, mid).json()
+    assert data["delivery"] == "unknown" and data["message"]["status"] == "sent"
+    assert c.post(f"/api/outreach/{mid}/send", headers=ana).json()["error"]["code"] == "already_sent"
+
+
+def test_whatsmcp_daily_limit_still_applies(make_client, ana, fake):
+    c = make_client(whatsmcp_api_key="wamcp_live_test", outreach_daily_limit=1)
+    make_leads(c, ana, 2)
+    mids = [m["id"] for m in generate(c, ana, count=1).json()["items"]]
+    assert approve_and_send(c, ana, mids[0]).status_code == 200
+    assert generate(c, ana).status_code == 409
+    assert len(fake.whatsmcp_calls) == 1

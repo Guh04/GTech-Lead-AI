@@ -138,6 +138,10 @@ export async function mount(view) {
               throw new Error('Você editou o texto. Clique em “Salvar texto” e aprove novamente antes de enviar.');
             }
             const res = await api.post(`/outreach/${id}/send`);
+            if (res.delivery !== 'link') {
+              toast(res.delivery === 'unknown' ? 'Envio sem confirmação do WhatsMCP. Confira a conversa antes de tentar de novo.' : 'Mensagem enviada pelo WhatsApp.', res.delivery === 'unknown' ? 'warning' : 'success');
+              break;
+            }
             const w = window.open(res.whatsapp_url, '_blank');
             if (w) w.opener = null;
             toast(w ? 'WhatsApp aberto. Confira o texto e clique em enviar lá.' : 'O navegador bloqueou a janela. Permita pop-ups para abrir o WhatsApp.', w ? 'success' : 'warning');
