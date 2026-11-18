@@ -177,6 +177,41 @@ class OutreachService:
             raise AppError(409, "not_skippable", "Só é possível descartar mensagens pendentes.")
         return rows[0]
 
+    async def quick_send(self, lead_id: str) -> dict:
+        """Atalho de 1 clique: prepara a mensagem (ou usa a pendente do lead), aprova e registra o envio.
+
+        A ação do usuário (clicar em "Chamar") é a aprovação. O limite diário e o intervalo mínimo valem igual.
+        """
+        lead = await self.leads.get(lead_id)
+        if lead.get("do_not_contact"):
+            raise AppError(409, "do_not_contact", "Este lead pediu para não ser contatado.")
+        if not lead.get("whatsapp"):
+            raise AppError(409, "no_whatsapp", "Este lead não tem WhatsApp cadastrado.")
+        st = await self.status()  # confere o limite ANTES de gastar uma chamada de IA
+        if st.remaining <= 0:
+            raise AppError(429, "daily_limit_reached", f"Limite diário de {st.daily_limit} mensagens atingido. Continue amanhã para proteger seu número.")
+        if st.wait_seconds > 0:
+            raise AppError(429, "too_soon", f"Aguarde {st.wait_seconds}s antes do próximo envio para evitar bloqueios.")
+
+        pending, _ = await self.db.select(
+            "outreach_messages", filters=[("lead_id", f"eq.{lead_id}"), ("status", f"in.{OPEN}")], limit=1
+        )
+        if pending:
+            message_id = pending[0]["id"]
+            if pending[0]["status"] == OutreachStatus.DRAFT.value:
+                await self.approve(message_id)
+        else:
+            body, source = await ai_message.compose(self.settings, self.http, lead)
+            row = await self.db.insert(
+                "outreach_messages",
+                {
+                    "owner_id": self.owner_id, "lead_id": lead_id, "body": body, "source": source,
+                    "status": OutreachStatus.APPROVED.value, "approved_at": datetime.now(timezone.utc).isoformat(),
+                },
+            )
+            message_id = row["id"]
+        return await self.send(message_id)
+
     async def send(self, message_id: str) -> dict:
         """Registra o envio (limite diário + intervalo) e devolve o link do WhatsApp com o texto pronto."""
         msg = await self._get(message_id)
