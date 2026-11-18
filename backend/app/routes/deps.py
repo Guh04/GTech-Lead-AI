@@ -20,6 +20,11 @@ def lead_service(user: AuthUser = Depends(current_user), db: Database = Depends(
     return LeadService(db, user.id)
 
 
+def today_cutoff(settings: Settings = Depends(require_supabase)) -> str:
+    """Início de hoje (UTC) no fuso do app."""
+    return LeadService.start_of_today(_timezone(settings))
+
+
 def _timezone(settings: Settings) -> ZoneInfo:
     try:
         return ZoneInfo(settings.app_timezone)
