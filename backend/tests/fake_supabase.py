@@ -211,6 +211,8 @@ class FakeSupabase:
             result = cell is not None and re.match(pattern, str(cell), re.I | re.S) is not None
         elif op == "in":
             result = str(cell) in arg.strip("()").split(",")
+        elif op == "is":
+            result = cell is None if arg == "null" else str(cell).lower() == arg.lower()
         elif op in ("gte", "lte"):
             if cell is None:
                 result = False
