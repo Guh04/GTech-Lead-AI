@@ -155,6 +155,14 @@ export async function mount(view) {
     try {
       const search = await withLoading($('#p-submit', view), () => api.post('/prospecting/search', body));
       toast(`Pesquisa concluída: ${search.inserted_count} novo(s) lead(s) adicionados.`, 'success');
+      if ($('#p-prepare', view).checked && search.inserted_count > 0) {
+        try {
+          const prep = await api.post('/outreach/generate', { count: Math.min(search.inserted_count, 100), search_id: search.id });
+          if (prep.created) toast(`${prep.created} mensagem(ns) aguardando sua aprovação em Abordagem.`, 'info');
+        } catch (err) {
+          toast(err.message, 'warning'); // ex.: limite diário atingido; a busca em si já deu certo
+        }
+      }
       await loadHistory();
       showResults(search);
     } catch (err) {
