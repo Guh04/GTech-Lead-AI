@@ -14,7 +14,7 @@ CHROME = next((p for p in (
 ) if Path(p).exists()), None)
 
 
-def shot(html: Path, png: Path, width: int, height: int, scale: float = 1.0) -> None:
+def shot(html: Path, png: Path, width: int, height: int, scale: float = 1.0, bg: str | None = None) -> None:
     if not CHROME:
         raise SystemExit("Chrome/Edge não encontrado.")
     png = png.resolve()  # o Chrome grava relativo ao diretório dele, não ao nosso
@@ -23,7 +23,8 @@ def shot(html: Path, png: Path, width: int, height: int, scale: float = 1.0) -> 
         subprocess.run([
             CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", f"--user-data-dir={profile}",
             f"--window-size={width},{height}", f"--force-device-scale-factor={scale}",
-            "--virtual-time-budget=9000", f"--screenshot={png}", html.resolve().as_uri(),
+            "--virtual-time-budget=9000", *([f"--default-background-color={bg}"] if bg else []),
+            f"--screenshot={png}", html.resolve().as_uri(),
         ], check=True, capture_output=True, timeout=120)
 
 

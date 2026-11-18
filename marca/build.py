@@ -21,7 +21,7 @@ BASE_CSS = f"""
 :root{{--ink:{INK};--gr:{GRAPHITE};--gr2:{GRAPHITE2};--off:{OFF};--white:{WHITE};--blue:{BLUE};--deep:{DEEP}}}
 *{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}}
-.serif{{font-family:"Instrument Serif",Georgia,serif;font-weight:400;letter-spacing:-.02em;line-height:.98}}
+.serif{{font-family:"Instrument Serif",Georgia,serif;font-weight:400;letter-spacing:-.012em;line-height:1}}
 .serif em{{font-style:italic;color:var(--blue)}}
 .lbl{{font-size:20px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}}
 """
@@ -88,12 +88,12 @@ MOCK_CSS = """
 
 
 def laptop(img: str, w: int, style: str = "") -> str:
-    return (f'<div class="laptop sh" style="--w:{w}px;{style}"><div class="scr"><div class="in"><img src="../export/telas/{img}"></div></div>'
+    return (f'<div class="laptop sh" style="--w:{w}px;{style}"><div class="scr"><div class="in"><img src="../../export/telas/{img}"></div></div>'
             f'<div class="base"></div></div>')
 
 
 def phone(img: str, w: int, style: str = "", pos: str = "top") -> str:
-    return f'<div class="phone sh" style="--w:{w}px;{style}"><div class="in"><img src="../export/telas/{img}" style="object-position:{pos}"></div></div>'
+    return f'<div class="phone sh" style="--w:{w}px;{style}"><div class="in"><img src="../../export/telas/{img}" style="object-position:{pos}"></div></div>'
 
 
 PROJECTS = {
@@ -146,7 +146,7 @@ def build_manual() -> None:
                                        f'{"border:1px solid #d9d6cf;" if hexa in (OFF, WHITE) else ""}"><div class="lbl" style="font-size:15px">{nome}</div>'
                                        f'<div><div style="font-size:30px;font-weight:600;letter-spacing:-.02em">{hexa}</div><div style="font-size:15px;opacity:.7;margin-top:4px">{uso}</div></div></div>')
     body = f"""
-<div style="width:1920px;height:1700px;background:{OFF};padding:90px 110px;color:{INK}">
+<div style="width:1920px;height:1900px;background:{OFF};padding:90px 110px;color:{INK}">
   <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid {INK};padding-bottom:28px">
     {lockup(INK, BLUE, 70)}<div class="lbl" style="font-size:17px;color:#6b6f78">Manual de marca · v1</div></div>
   <div style="display:grid;grid-template-columns:1.15fr .85fr;gap:70px;margin-top:70px">
@@ -167,8 +167,8 @@ def build_manual() -> None:
     <div style="background:{WHITE};border:1px solid #d9d6cf;padding:30px;height:250px"><div style="font-size:15px;font-weight:600;color:#1a7f4b">FAZER</div><p style="font-size:16px;color:#4b4f58;margin-top:10px;line-height:1.7">Usar a versão clara sobre preto ou azul e a escura sobre off-white. Manter o bloco azul. Largura mínima de 120 px.</p></div>
     <div style="background:{WHITE};border:1px solid #d9d6cf;padding:30px;height:250px"><div style="font-size:15px;font-weight:600;color:#c0352b">NÃO FAZER</div><p style="font-size:16px;color:#4b4f58;margin-top:10px;line-height:1.7">Esticar, girar ou recolorir o símbolo. Aplicar sobre fotos sem contraste. Adicionar sombras, brilhos ou degradês.</p></div></div>
 </div>"""
-    write("manual.html", page(body, 1920, 1700, OFF))
-    job("manual.html", "manual-de-marca.png", 1920, 1700)
+    write("manual.html", page(body, 1920, 1900, OFF))
+    job("manual.html", "manual-de-marca.png", 1920, 1900)
 
 
 # ------------------------------------------------------------------ destaques
@@ -183,7 +183,7 @@ ICONS = {
 
 def build_destaques() -> None:
     for nome, ic in ICONS.items():
-        art = symbol(WHITE, BLUE, 380) if ic is None else f'<svg width="380" height="380" viewBox="0 0 100 100">{ic}<rect x="76" y="14" width="10" height="10" fill="{BLUE}"/></svg>'
+        art = symbol(WHITE, BLUE, 440) if ic is None else f'<svg width="520" height="520" viewBox="0 0 100 100">{ic}<rect x="76" y="14" width="10" height="10" fill="{BLUE}"/></svg>'
         body = (f'<div style="width:1080px;height:1920px;background:{INK};position:relative;display:grid;place-items:center">'
                 f'<div style="width:760px;height:760px;border-radius:50%;border:2px solid {GRAPHITE2};display:grid;place-items:center">{art}</div>'
                 f'<div class="lbl" style="position:absolute;bottom:260px;left:0;right:0;text-align:center;color:#8a8f9a;font-size:26px">{nome}</div></div>')
@@ -219,7 +219,7 @@ def build_posts() -> None:
     P[3] = post_shell(f'<div style="position:absolute;left:64px;right:64px;top:210px"><div class="serif" style="font-size:112px;margin-bottom:54px">O que <em>desenvolvemos</em></div>{rows}</div>',
                       GRAPHITE, WHITE, "Serviços", "Slide 1")
     # 4 advocacia
-    P[4] = post_shell(f'<div style="position:absolute;left:-60px;top:300px">{laptop("advocacia-desktop.png", 880, "transform:perspective(2200px) rotateY(14deg) rotateX(3deg)")}</div>'
+    P[4] = post_shell(f'<div style="position:absolute;left:30px;top:300px">{laptop("advocacia-desktop.png", 840, "transform:perspective(2200px) rotateY(14deg) rotateX(3deg)")}</div>'
                       f'<div style="position:absolute;right:76px;top:610px">{phone("advocacia-mobile.png", 260, "transform:rotate(-3deg)")}</div>'
                       f'<div style="position:absolute;left:64px;bottom:150px"><div class="lbl" style="color:{BLUE};font-size:18px">Escritório de advocacia</div><div class="serif" style="font-size:78px;margin-top:12px;max-width:640px">Site institucional com <em>presença</em> corporativa.</div></div>',
                       INK, WHITE, "Projeto conceitual", NOTE)
@@ -236,9 +236,9 @@ def build_posts() -> None:
     # 7 diferenciais
     items = [("Design sob medida", "Cada projeto parte da identidade e do público do negócio."), ("Celular e desktop", "Páginas que funcionam bem em qualquer tamanho de tela."),
              ("Pensado para contato", "Estrutura que leva o visitante ao WhatsApp ou ao orçamento."), ("Processo claro", "Do briefing à publicação, você sabe cada etapa.")]
-    cards = "".join(f'<div style="background:#fff;padding:36px 34px;height:330px;display:flex;flex-direction:column;justify-content:space-between"><span class="lbl" style="color:{BLUE};font-size:18px">0{i}</span>'
+    cards = "".join(f'<div style="background:#fff;padding:40px 36px;height:400px;display:flex;flex-direction:column;justify-content:space-between"><span class="lbl" style="color:{BLUE};font-size:18px">0{i}</span>'
                     f'<div><div class="serif" style="font-size:54px">{t}</div><div style="font-size:21px;line-height:1.5;color:#5b606a;margin-top:14px">{d}</div></div></div>' for i, (t, d) in enumerate(items, 1))
-    P[7] = post_shell(f'<div style="position:absolute;left:64px;right:64px;top:210px"><div class="serif" style="font-size:104px;margin-bottom:46px">Como <em>trabalhamos</em></div>'
+    P[7] = post_shell(f'<div style="position:absolute;left:64px;right:64px;top:230px"><div class="serif" style="font-size:112px;margin-bottom:50px">Como <em>trabalhamos</em></div>'
                       f'<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#dcd9d2;border:2px solid #dcd9d2">{cards}</div></div>', OFF, INK, "Diferenciais", "")
     # 8 desktop x mobile
     P[8] = post_shell(f'<div style="position:absolute;left:64px;top:270px">{laptop("servicos-desktop.png", 700, "transform:perspective(2000px) rotateY(10deg)")}</div>'
@@ -260,15 +260,19 @@ def build_posts() -> None:
 def build_feed() -> None:
     order = [1, 2, 3, 4, 5, 6, 7, 8, 9]
     thumbs = "".join(f'<div style="aspect-ratio:3/4;overflow:hidden;position:relative"><img src="../export/instagram/posts/post-{n:02d}.png" style="width:100%;height:100%;object-fit:cover"></div>' for n in order)
-    body = (f'<div style="width:1920px;height:1500px;background:{OFF};padding:80px 110px;color:{INK}"><div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:46px">'
+    body = (f'<div style="width:1920px;height:1760px;background:{OFF};padding:80px 110px;color:{INK}"><div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:46px">'
             f'<div><div class="lbl" style="color:{BLUE};font-size:15px">Planejamento do feed</div><div class="serif" style="font-size:84px;margin-top:14px">As primeiras <em>9</em> publicações</div></div>'
             f'<div style="font-size:19px;line-height:1.6;color:#4b4f58;max-width:560px;text-align:right">Alternância entre texto e projeto, em xadrez. Publique de <b>9 para 1</b> (a 1 fica no topo à esquerda).</div></div>'
             f'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:1080px;margin:auto">{thumbs}</div></div>')
-    write("feed.html", page(body, 1920, 1500, OFF))
-    job("feed.html", "instagram/feed-9-publicacoes.png", 1920, 1500)
+    write("feed.html", page(body, 1920, 1760, OFF))
+    job("feed.html", "instagram/feed-9-publicacoes.png", 1920, 1760)
 
-    hl = "".join(f'<div style="text-align:center"><div style="width:132px;height:132px;border-radius:50%;border:2px solid #d7d7d7;padding:6px"><img src="../export/instagram/destaques/destaque-{s}.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:center 46%;transform:scale(1.9)"></div>'
-                 f'<div style="font-size:22px;margin-top:10px;color:#222">{t}</div></div>' for s, t in [("servicos", "Serviços"), ("portfolio", "Portfólio"), ("projetos", "Projetos"), ("sobre", "Sobre"), ("contato", "Contato")])
+    def hl_icon(nome):
+        ic = ICONS[nome]
+        art = symbol(WHITE, BLUE, 62) if ic is None else f'<svg width="62" height="62" viewBox="0 0 100 100">{ic}<rect x="76" y="14" width="10" height="10" fill="{BLUE}"/></svg>'
+        return (f'<div style="text-align:center;width:150px"><div style="width:132px;height:132px;margin:auto;border-radius:50%;background:{INK};display:grid;place-items:center;border:4px solid #fff;outline:2px solid #d7d7d7">{art}</div>'
+                f'<div style="font-size:22px;margin-top:12px;color:#222">{nome}</div></div>')
+    hl = "".join(hl_icon(n) for n in ["Serviços", "Portfólio", "Projetos", "Sobre", "Contato"])
     small = "".join(f'<div style="aspect-ratio:3/4;overflow:hidden"><img src="../export/instagram/posts/post-{n:02d}.png" style="width:100%;height:100%;object-fit:cover"></div>' for n in order)
     body = (f'<div style="width:1080px;height:1920px;background:#fff;color:#111;padding:60px 48px"><div style="display:flex;align-items:center;gap:44px">'
             f'<div style="width:200px;height:200px;border-radius:50%;background:{INK};display:grid;place-items:center;flex:none">{symbol(WHITE, BLUE, 110)}</div>'
@@ -276,7 +280,7 @@ def build_feed() -> None:
             f'<div style="margin-top:28px;font-size:30px;line-height:1.45"><b>GTech Digital Studio | Sites e Landing Pages</b><div style="color:#6b6b6b;font-size:25px">Agência de web design</div>'
             f'<div style="margin-top:6px">Landing pages e sites profissionais para empresas.<br>Design sob medida, rápido e pronto para converter.<br>Orçamento pelo WhatsApp 👇</div><div style="color:{BLUE};font-weight:600;margin-top:6px">wa.me/seunumero</div></div>'
             f'<div style="display:flex;gap:14px;margin-top:30px"><div style="flex:1;background:{BLUE};color:#fff;font-weight:600;font-size:26px;text-align:center;padding:20px;border-radius:12px">Entrar em contato</div><div style="flex:1;background:#efefef;font-weight:600;font-size:26px;text-align:center;padding:20px;border-radius:12px">Ver projetos</div></div>'
-            f'<div style="display:flex;justify-content:space-between;margin:40px 0 34px">{hl}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0 -48px">{small}</div></div>')
+            f'<div style="display:flex;justify-content:space-between;margin:44px 0 40px;padding:0 6px">{hl}</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:0 -48px">{small}</div></div>')
     write("perfil.html", page(body, 1080, 1920, WHITE))
     job("perfil.html", "instagram/perfil-preview.png", 1080, 1920)
 

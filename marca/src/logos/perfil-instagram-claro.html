@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><style>
+:root{--ink:#0A0C10;--gr:#1B1F27;--gr2:#2A2F3A;--off:#F3F1EC;--white:#FFFFFF;--blue:#1D4DFF;--deep:#0B2A8F}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.serif{font-family:"Instrument Serif",Georgia,serif;font-weight:400;letter-spacing:-.02em;line-height:.98}
+.serif em{font-style:italic;color:var(--blue)}
+.lbl{font-size:20px;font-weight:600;letter-spacing:.18em;text-transform:uppercase}
+
+.laptop{position:relative;width:var(--w,1000px)}
+.laptop .scr{background:#0c0d10;border-radius:18px 18px 6px 6px;padding:calc(var(--w,1000px)*.012);box-shadow:0 0 0 2px #2b2e36 inset}
+.laptop .scr .in{aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:#fff}
+.laptop .scr img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.laptop .base{height:calc(var(--w,1000px)*.026);margin:0 -4%;background:linear-gradient(#cfd2d8,#9ea2ab);border-radius:2px 2px 18px 18px;position:relative}
+.laptop .base:after{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);width:16%;height:38%;background:#8b8f98;border-radius:0 0 10px 10px}
+.phone{position:relative;width:var(--w,300px);aspect-ratio:9/19;background:#0c0d10;border-radius:calc(var(--w,300px)*.15);padding:calc(var(--w,300px)*.035);box-shadow:0 0 0 2px #2b2e36 inset}
+.phone .in{width:100%;height:100%;border-radius:calc(var(--w,300px)*.12);overflow:hidden;background:#fff}
+.phone .in img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.phone:before{content:"";position:absolute;top:calc(var(--w,300px)*.05);left:50%;transform:translateX(-50%);width:28%;height:calc(var(--w,300px)*.05);background:#0c0d10;border-radius:99px;z-index:2}
+.sh{filter:drop-shadow(0 50px 50px rgba(8,10,16,.35)) drop-shadow(0 12px 14px rgba(8,10,16,.25))}
+html,body{width:1080px;height:1080px;overflow:hidden;background:#F3F1EC}</style></head><body><div style="width:1080px;height:1080px;display:grid;place-items:center"><svg width="520" height="520" viewBox="10 11 84 84" xmlns="http://www.w3.org/2000/svg"><path d="M76 28H22V78H82V54H54" fill="none" stroke="#0A0C10" stroke-width="12" stroke-linejoin="miter"/><rect x="76" y="22" width="12" height="12" fill="#1D4DFF"/></svg></div></body></html>
