@@ -253,6 +253,33 @@ class LeadService:
         await self._log_status_change(lead_id, existing["status"], status.value)
         return rows[0]
 
+    # ------------------------------------------------------------------ limpeza de leads antigos
+    @staticmethod
+    def start_of_today(tz) -> str:
+        """Início do dia atual (no fuso do app) em UTC: tudo antes disso é "de dias anteriores"."""
+        now = datetime.now(tz)
+        return now.replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc).isoformat()
+
+    @staticmethod
+    def _cleanup_filters(cutoff: str) -> list[Filter]:
+        # Só apaga o que ainda não andou no funil e não pediu opt-out: quem já foi contatado (ou pediu para
+        # não ser contatado) continua no banco, senão uma nova busca o traria de volta como "lead novo".
+        return [
+            ("created_at", f"lt.{cutoff}"),
+            ("do_not_contact", "eq.false"),
+            ("status", f"in.({LeadStatus.NEW.value},{LeadStatus.ANALYZED.value})"),
+        ]
+
+    async def cleanup_preview(self, cutoff: str) -> dict:
+        _, older = await self.db.select("leads", columns="id", filters=[("created_at", f"lt.{cutoff}")], limit=1, count=True)
+        _, deletable = await self.db.select("leads", columns="id", filters=self._cleanup_filters(cutoff), limit=1, count=True)
+        older, deletable = older or 0, deletable or 0
+        return {"deletable": deletable, "protected": max(0, older - deletable)}
+
+    async def cleanup(self, cutoff: str) -> dict:
+        rows = await self.db.delete("leads", self._cleanup_filters(cutoff))
+        return {"deleted": len(rows)}
+
     async def delete(self, lead_id: str) -> None:
         rows = await self.db.delete("leads", [("id", f"eq.{lead_id}")])
         if not rows:
