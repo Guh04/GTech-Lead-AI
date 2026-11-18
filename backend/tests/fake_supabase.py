@@ -275,6 +275,15 @@ class FakeSupabase:
             if not any(r["id"] == row["lead_id"] and r["owner_id"] == uid for r in self.rows["leads"]):
                 return None, httpx.Response(403, json={"code": "42501", "message": "row-level security"})
             row.setdefault("metadata", {})
+        if table == "outreach_messages":
+            if not any(r["id"] == row["lead_id"] and r["owner_id"] == uid for r in self.rows["leads"]):
+                return None, httpx.Response(403, json={"code": "42501", "message": "row-level security"})
+            row.setdefault("status", "draft"), row.setdefault("source", "template")
+            row.setdefault("approved_at", None), row.setdefault("sent_at", None)
+            if row["status"] in ("draft", "approved") and any(
+                r["lead_id"] == row["lead_id"] and r["status"] in ("draft", "approved") for r in self.rows[table]
+            ):
+                return None, self._dup("uq_outreach_open_per_lead")
         if table == "prospecting_searches":
             row.setdefault("results_count", 0), row.setdefault("inserted_count", 0), row.setdefault("duplicates_count", 0)
             row.setdefault("error_message", None), row.setdefault("finished_at", None), row.setdefault("provider", None)
