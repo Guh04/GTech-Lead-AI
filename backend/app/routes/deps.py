@@ -10,6 +10,7 @@ from app.core.security import current_user, get_db, get_http, require_supabase
 from app.core.supabase import AuthUser, Database
 from app.services.analytics_service import AnalyticsService
 from app.services.lead_service import LeadService
+from app.services.outreach_service import OutreachService
 from app.services.prospecting.service import ProspectingService, get_provider
 
 log = logging.getLogger("gtech")
