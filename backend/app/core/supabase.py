@@ -29,6 +29,7 @@ _DUPLICATE_MESSAGES = {
     "uq_leads_owner_phone": "Já existe um lead cadastrado com este telefone.",
     "uq_leads_owner_whatsapp": "Já existe um lead cadastrado com este WhatsApp.",
     "uq_leads_owner_website": "Já existe um lead cadastrado com este site.",
+    "uq_outreach_open_per_lead": "Este lead já tem uma mensagem pendente na fila de abordagem.",
 }
 
 
