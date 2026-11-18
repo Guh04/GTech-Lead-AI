@@ -25,11 +25,13 @@ LEAD_EMBED = "*,lead:leads(company_name,segment,city,state,whatsapp,do_not_conta
 OPEN = f"({OutreachStatus.DRAFT.value},{OutreachStatus.APPROVED.value})"
 
 
-def whatsapp_url(digits: str, text: str) -> str:
+def normalize_phone(digits: str) -> str:
     d = "".join(c for c in digits if c.isdigit())
-    if len(d) in (10, 11):
-        d = f"55{d}"
-    return f"https://wa.me/{d}?text={quote(text)}"
+    return f"55{d}" if len(d) in (10, 11) else d
+
+
+def whatsapp_url(digits: str, text: str) -> str:
+    return f"https://wa.me/{normalize_phone(digits)}?text={quote(text)}"
 
 
 class OutreachService:
