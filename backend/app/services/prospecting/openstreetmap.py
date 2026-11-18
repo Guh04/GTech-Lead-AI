@@ -83,7 +83,7 @@ def _plain(text: str) -> str:
 
 def tags_for_segment(segment: str) -> list[tuple[str, str]]:
     """Categorias do OSM para um segmento digitado em português; lista vazia se não houver."""
-    plain = _plain(segment)
+    plain = _plain(segment).replace("-", " ")  # "lava-jato" == "lava jato"
     words = re.findall(r"[a-z0-9]+", plain)
     found: list[tuple[str, str]] = []
     for prefixes, tags in SEGMENT_RULES:
