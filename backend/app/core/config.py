@@ -50,9 +50,11 @@ class Settings(BaseSettings):
     outreach_daily_limit: int = Field(20, ge=1, le=1000)
     outreach_min_interval_seconds: int = Field(45, ge=0, le=3600)
     # Dados usados na assinatura/oferta das mensagens.
-    outreach_sender_name: str = ""
+    outreach_sender_name: str = "Gustavo"
     outreach_sender_company: str = "GTech Digital Studio"
-    outreach_offer: str = "criação de landing pages profissionais para atrair mais clientes"
+    outreach_offer: str = "criação de landing pages e sites profissionais para empresas"
+    # Linha final para quem não quer receber mensagens (boa conduta / LGPD). Vazio = não acrescenta.
+    outreach_opt_out: str = "Se não quiser receber mensagens, é só avisar."
 
     @property
     def supabase_configured(self) -> bool:
