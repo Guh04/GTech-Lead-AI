@@ -67,8 +67,12 @@ async def create_lead(body: LeadCreate, svc: LeadService = Depends(lead_service)
 
 
 @router.get("/cleanup/preview", summary="Quantos leads de dias anteriores seriam apagados (nada é apagado)")
-async def cleanup_preview(cutoff: str = Depends(today_cutoff), svc: LeadService = Depends(lead_service)):
-    return await svc.cleanup_preview(cutoff)
+async def cleanup_preview(
+    include_today: bool = Query(False, description="true = também considera os leads de hoje"),
+    cutoff: str = Depends(today_cutoff),
+    svc: LeadService = Depends(lead_service),
+):
+    return await svc.cleanup_preview(None if include_today else cutoff)
 
 
 @router.post(
