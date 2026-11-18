@@ -76,7 +76,7 @@ def create_app(settings: Settings | None = None, http_client: httpx.AsyncClient 
             response.headers.setdefault("Cache-Control", "no-cache")
         return response
 
-    for router in (auth.router, leads.router, analytics.router, prospecting.router):
+    for router in (auth.router, leads.router, analytics.router, prospecting.router, outreach.router):
         app.include_router(router, prefix="/api")
 
     frontend = settings.frontend_path
