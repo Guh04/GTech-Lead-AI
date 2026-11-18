@@ -24,12 +24,14 @@ def filters(
     source: LeadSource | None = None,
     active: bool = Query(False, description="Somente leads em negociação (exclui fechados e perdidos)"),
     search_id: UUID | None = Query(None, description="Leads encontrados por uma pesquisa de prospecção"),
+    has_whatsapp: bool | None = Query(None, description="true = somente com WhatsApp; false = somente sem"),
+    contactable: bool = Query(False, description="Somente leads ainda não contatados e sem pedido de 'não contatar'"),
     sort: str = Query("created_desc", pattern="^(" + "|".join(SORTS) + ")$"),
 ) -> LeadFilters:
     return LeadFilters(
         search=search, segment=segment, city=city, state=state.upper() if state else None, priority=priority,
         status=status, landing_status=landing_status, source=source, active=active,
-        search_id=str(search_id) if search_id else None, sort=sort,
+        search_id=str(search_id) if search_id else None, has_whatsapp=has_whatsapp, contactable=contactable, sort=sort,
     )
 
 
