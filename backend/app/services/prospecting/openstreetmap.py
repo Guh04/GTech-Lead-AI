@@ -191,7 +191,7 @@ class OpenStreetMapProvider:
                 build_lead(
                     self._http, gate, query, origin="OpenStreetMap", name=name, segment=segment,
                     city=tags.get("addr:city"), state=query.state,
-                    phone=self._first(tags.get("phone") or tags.get("contact:phone")),
+                    phone=self._first(tags.get("phone") or tags.get("contact:phone") or tags.get("mobile") or tags.get("contact:mobile")),
                     whatsapp=self._first(tags.get("contact:whatsapp")),
                     website_raw=self._first(tags.get("website") or tags.get("contact:website")),
                     instagram_raw=tags.get("contact:instagram"), facebook_raw=tags.get("contact:facebook"),
