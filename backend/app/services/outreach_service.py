@@ -71,6 +71,7 @@ class OutreachService:
             min_interval_seconds=self.settings.outreach_min_interval_seconds,
             wait_seconds=wait,
             ai_configured=bool(self.settings.anthropic_api_key.strip()),
+            auto_send=self.settings.whatsmcp_configured,
         )
 
     # ------------------------------------------------------------------ leitura
