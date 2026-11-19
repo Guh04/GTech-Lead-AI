@@ -6,6 +6,7 @@ pydantic>=2.7,<3
 pydantic-settings>=2.3,<3
 email-validator>=2.1,<3
 tzdata>=2024.1          # fusos horários no Windows (America/Sao_Paulo)
+openpyxl>=3.1,<4          # leitura de planilhas .xlsx na importação de leads
 
 # Testes
 pytest>=8,<9
