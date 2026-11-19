@@ -38,7 +38,7 @@ window.SITE = {
 
   // Benefícios. Confira cada um antes de publicar: só deixe o que a loja realmente cumpre.
   benefits: [
-    { title: "Envio para todo o Brasil", text: "[CONFIRMAR] Enviamos para o seu endereço. Combine prazo e frete pelo WhatsApp." },
+    { title: "Envio para todo o Brasil", text: "Enviamos para o seu endereço. Combine prazo e frete pelo WhatsApp." },
     { title: "Atendimento pelo WhatsApp", text: "Tire dúvidas, peça indicação de produtos e feche seu pedido direto com a loja." },
     { title: "Compra segura", text: "[CONFIRMAR] Formas de pagamento combinadas com a loja antes do envio." }
   ],
