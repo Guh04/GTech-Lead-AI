@@ -52,7 +52,8 @@ window.SITE = {
 
   faq: [
     { q: "Como faço um pedido?", a: "Chame no WhatsApp, diga os produtos que quer e seu CEP. A loja responde com valores e frete." },
-    { q: "Vocês enviam para o Brasil todo?", a: "[CONFIRMAR] Consulte o frete para a sua cidade pelo WhatsApp." },
+    { q: "Vocês enviam para o Brasil todo?", a: "Sim, enviamos para todo o Brasil. Consulte o frete para a sua cidade pelo WhatsApp." },
+    { q: "Tem loja física?", a: "Sim, a Tendências Makeup tem loja física e também vende on-line. Pergunte o endereço pelo WhatsApp." },
     { q: "Quais as formas de pagamento?", a: "[CONFIRMAR] Informe a forma que prefere ao fazer o pedido." },
     { q: "Os produtos têm estoque?", a: "A disponibilidade é confirmada no atendimento, antes de fechar o pedido." }
   ],
