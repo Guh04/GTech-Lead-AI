@@ -2,7 +2,7 @@
 :root {
   --bg: #fffafb; --bg-alt: #fdf0f3; --card: #ffffff; --border: #f0d9df;
   --text: #17120f; --text-2: #5c5055; --text-3: #8a7c82;
-  --accent: #d9748f; --accent-d: #b84a68; --ink: #111111; --yellow: #8a5a00; --yellow-bg: #fff3cd;
+  --accent: #f06aa8; --accent-d: #d6246e; --ink: #111111; --yellow: #8a5a00; --yellow-bg: #fff3cd;
   --radius: 14px; --max: 1080px;
   --serif: Georgia, "Times New Roman", serif;
 }
