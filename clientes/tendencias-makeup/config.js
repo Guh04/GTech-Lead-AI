@@ -15,7 +15,7 @@ window.SITE = {
 
   eyebrow: "Maquiagem, cosméticos e acessórios",
   headline: "Maquiagem que acompanha as tendências",
-  subheadline: "Maquiagem, unhas, cílios, cabelo e acessórios em um só lugar. Escolha pelas categorias e peça direto no WhatsApp, com atendimento de verdade.",
+  subheadline: "Sua make completa do R$ 10,00 ao premium. Loja física e on-line, com envio para todo o Brasil. Escolha pelas categorias e peça direto no WhatsApp.",
 
   // Categorias da loja.
   categories: [
