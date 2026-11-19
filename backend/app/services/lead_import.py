@@ -83,8 +83,8 @@ def _cell(value) -> str:
 
 
 # ------------------------------------------------------------------ leitura do arquivo
-def read_table(content: bytes, filename: str) -> tuple[list[str], list[list[str]]]:
-    """Devolve (cabeçalhos, linhas) de um .csv ou .xlsx."""
+def read_table(content: bytes, filename: str) -> tuple[list[str], list[tuple[int, list[str]]]]:
+    """Devolve (cabeçalhos, [(nº da linha na planilha, células)]) de um .csv ou .xlsx; linhas vazias são puladas."""
     name = (filename or "").lower()
     if not content:
         raise AppError(422, "empty_file", "O arquivo está vazio.")
@@ -97,10 +97,10 @@ def read_table(content: bytes, filename: str) -> tuple[list[str], list[list[str]
     else:
         raise AppError(422, "unsupported_file", "Formato não suportado. Salve a planilha como .xlsx ou .csv e tente de novo.")
 
-    grid = [row for row in grid if any(c for c in row)]
+    grid = [(n, row) for n, row in enumerate(grid, start=1) if any(c for c in row)]
     if len(grid) < 2:
         raise AppError(422, "empty_file", "A planilha precisa ter uma linha de cabeçalho e ao menos um lead.")
-    headers, rows = grid[0], grid[1:]
+    headers, rows = grid[0][1], grid[1:]
     if len(rows) > MAX_ROWS:
         raise AppError(422, "too_many_rows", f"A planilha tem {len(rows)} linhas. Importe até {MAX_ROWS} por vez.")
     return headers, rows
@@ -197,16 +197,13 @@ def _site(raw: str) -> tuple[str | None, str | None]:
 def build_payload(values: dict[str, str], extras: list[tuple[str, str]]) -> dict:
     get = lambda k: values.get(k, "").strip()  # noqa: E731
 
-    city, district = get("city"), ""
+    city, district, state = get("city"), "", get("state")
     if not city and get("city_district"):
-        *left, last = [p.strip() for p in get("city_district").split(",")]
-        city, district = last, ", ".join(left)
-        if " - " in city and not left:  # "Sorocaba - SP"
-            city, _, uf = city.rpartition(" - ")
-            values.setdefault("state", uf)
-    if not get("state") and re.search(r"[-/]\s*([A-Za-z]{2})$", city):
-        m = re.search(r"\s*[-/]\s*([A-Za-z]{2})$", city)
-        values["state"], city = m.group(1), city[: m.start()]
+        *left, city = [p.strip() for p in get("city_district").split(",")]
+        district = ", ".join(left)
+    m = re.search(r"\s*[-/]\s*([A-Za-z]{2})$", city)  # "Sorocaba - SP"
+    if m and not state:
+        state, city = m.group(1), city[: m.start()]
 
     phone, whatsapp = _phones(get("phone"), get("whatsapp"), get("phone_any"))
     website, landing = _site(get("website"))
@@ -225,7 +222,7 @@ def build_payload(values: dict[str, str], extras: list[tuple[str, str]]) -> dict
         "contact_name": get("contact_name") or None,
         "segment": get("segment") or None,
         "city": city or None,
-        "state": get("state") or None,
+        "state": state or None,
         "phone": phone,
         "whatsapp": whatsapp,
         "instagram": get("instagram") or None,
@@ -238,8 +235,6 @@ def build_payload(values: dict[str, str], extras: list[tuple[str, str]]) -> dict
         "do_not_contact": _norm(get("do_not_contact")) in _YES,
         "notes": ("\n".join(notes)[:NOTES_LIMIT]) or None,
     }
-    if payload["website"] is None and "." in get("website") and " " not in get("website"):
-        payload["website"] = get("website")
     return payload
 
 
@@ -289,7 +284,7 @@ async def import_leads(svc: LeadService, content: bytes, filename: str, *, dry_r
         if len(result["errors"]) < 50:
             result["errors"].append({"line": line, "name": name, "reason": reason})
 
-    for n, row in enumerate(rows, start=2):  # linha 1 = cabeçalho
+    for n, row in rows:
         cells = row + [""] * (len(headers) - len(row))
         values: dict[str, str] = {}
         for i, target in cmap.fields.items():

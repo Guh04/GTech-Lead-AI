@@ -78,6 +78,29 @@ async function download(path, params, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+/** Envia um arquivo (bytes brutos) para a API. */
+async function upload(path, file, params) {
+  const session = getSession();
+  let res;
+  try {
+    res = await fetch(`/api${path}${buildQuery(params)}`, {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/octet-stream', ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}) },
+      body: file,
+    });
+  } catch {
+    throw new ApiError('Não foi possível conectar ao servidor.', { code: 'network' });
+  }
+  if (res.status === 401) {
+    clearSession();
+    window.dispatchEvent(new CustomEvent('auth:expired'));
+    throw new ApiError('Sua sessão expirou. Entre novamente.', { status: 401, code: 'session_expired' });
+  }
+  const data = await res.json().catch(() => null);
+  if (!res.ok) throw new ApiError(data?.error?.message || `Erro inesperado (${res.status}).`, { status: res.status, code: data?.error?.code || 'error' });
+  return data;
+}
+
 export const api = {
   get: (path, params) => send('GET', path, { params }),
   post: (path, body) => send('POST', path, { body }),
@@ -85,6 +108,7 @@ export const api = {
   patch: (path, body) => send('PATCH', path, { body }),
   delete: (path) => send('DELETE', path),
   download,
+  importLeads: (file, dryRun) => upload('/leads/import', file, { filename: file.name, dry_run: dryRun }),
 
   // Atalhos de domínio
   health: async () => {

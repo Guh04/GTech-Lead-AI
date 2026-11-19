@@ -200,7 +200,9 @@ class LeadService:
         if search_id:
             data["prospecting_search_id"] = search_id
         lead = await self.db.insert("leads", data)
-        origin = "pelo agente de IA" if lead.get("source") == LeadSource.AI_AGENT.value else "manualmente"
+        origin = {LeadSource.AI_AGENT.value: "pelo agente de IA", LeadSource.IMPORT.value: "por importação de planilha"}.get(
+            lead.get("source"), "manualmente"
+        )
         await self.activities.log(
             lead["id"], ActivityType.CREATED, f"Lead cadastrado {origin} (pontuação {lead['score']}).",
             {"score": lead["score"], "source": lead.get("source")},

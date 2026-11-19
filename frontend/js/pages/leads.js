@@ -4,6 +4,7 @@ import { $, html, setHtml, debounce, hashParams, formatNumber, formatDate, forma
 import { renderIcons, icon, toast, toastError, errorState, emptyState, skeletonRows, statusBadge, priorityBadge, landingBadge, scoreBar, confirmDialog, withLoading } from '../ui.js';
 import { openLeadDetail } from '../components/lead-detail.js';
 import { openLeadForm } from '../components/lead-form.js';
+import { openLeadImport } from '../components/lead-import.js';
 import { STATUSES, PRIORITIES, LANDING, PAGE_SIZE } from '../constants.js';
 
 const FILTER_IDS = { search: 'f-search', segment: 'f-segment', city: 'f-city', priority: 'f-priority', status: 'f-status', landing_status: 'f-landing', sort: 'f-sort' };
@@ -102,7 +103,7 @@ export async function mount(view) {
       if (res.items.length === 0) {
         setHtml(state, hasFilters()
           ? emptyState({ icon: 'search-x', title: 'Nenhum lead encontrado', text: 'Nenhum lead corresponde aos filtros aplicados. Tente ajustar ou limpar os filtros.' })
-          : emptyState({ icon: 'users', title: 'Nenhum lead cadastrado', text: 'Cadastre seu primeiro lead manualmente. Se a busca automática estiver ativa, os leads encontrados na Prospecção também aparecerão aqui.', action: html`<button class="btn btn-primary" data-new style="margin-top:8px">${icon('plus', 'icon-sm')}Cadastrar lead</button>` }));
+          : emptyState({ icon: 'users', title: 'Nenhum lead cadastrado', text: 'Cadastre seu primeiro lead manualmente. Se a busca automática estiver ativa, os leads encontrados na Prospecção também aparecerão aqui.', action: html`<button class="btn btn-primary" data-new style="margin-top:8px">${icon('plus', 'icon-sm')}Cadastrar lead</button> <button class="btn" data-import style="margin-top:8px">${icon('upload', 'icon-sm')}Importar planilha</button>` }));
       }
       renderPagination(res.total);
       renderIcons();
@@ -131,6 +132,10 @@ export async function mount(view) {
     try { if (await openLeadForm()) load(); } catch (err) { toastError(err); }
   };
   $('#add-btn', view).addEventListener('click', create);
+
+  $('#import-btn', view).addEventListener('click', async () => {
+    if (await openLeadImport()) { page = 1; load(); }
+  });
 
   $('#export-btn', view).addEventListener('click', async (e) => {
     try {
@@ -170,6 +175,7 @@ export async function mount(view) {
 
   view.addEventListener('click', async (e) => {
     if (e.target.closest('[data-new]')) return create();
+    if (e.target.closest('[data-import]')) return $('#import-btn', view).click();
     if (e.target.closest('[data-retry]')) return load();
 
     const pageBtn = e.target.closest('[data-page]');

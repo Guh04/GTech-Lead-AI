@@ -2,13 +2,15 @@
 from datetime import date
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Query, Response
+from fastapi import APIRouter, Depends, Query, Request, Response
 
 from app.models.enums import LandingStatus, LeadSource, LeadStatus, Priority
 from app.routes.deps import lead_service, today_cutoff
 from app.schemas.activity import ActivityOut, NoteCreate
 from app.schemas.lead import Facets, LeadCreate, LeadOut, LeadPage, LeadUpdate, StatusChange
+from app.core.errors import AppError
 from app.services import demo_site as demo_site_service
+from app.services import lead_import
 from app.services.lead_service import SORTS, LeadFilters, LeadService
 
 router = APIRouter(prefix="/leads", tags=["leads"])
@@ -75,6 +77,29 @@ async def export_csv(f: LeadFilters = Depends(filters), svc: LeadService = Depen
 @router.post("", response_model=LeadOut, status_code=201, summary="Cadastrar lead")
 async def create_lead(body: LeadCreate, svc: LeadService = Depends(lead_service)):
     return await svc.create(body)
+
+
+@router.post(
+    "/import",
+    summary="Importar leads de uma planilha (.xlsx ou .csv)",
+    description="O corpo da requisição é o arquivo (bytes). Com dry_run=true apenas simula e devolve o resumo, sem gravar nada. "
+    "Leads duplicados (empresa+cidade, telefone, WhatsApp ou site) são ignorados.",
+)
+async def import_leads(
+    request: Request,
+    filename: str = Query("leads.csv", max_length=200),
+    dry_run: bool = Query(False),
+    svc: LeadService = Depends(lead_service),
+):
+    declared = request.headers.get("content-length")
+    if declared and declared.isdigit() and int(declared) > lead_import.MAX_FILE_BYTES:
+        raise AppError(413, "file_too_large", "Arquivo muito grande (máximo de 5 MB).")
+    body = b""
+    async for chunk in request.stream():
+        body += chunk
+        if len(body) > lead_import.MAX_FILE_BYTES:
+            raise AppError(413, "file_too_large", "Arquivo muito grande (máximo de 5 MB).")
+    return await lead_import.import_leads(svc, body, filename, dry_run=dry_run)
 
 
 @router.get("/cleanup/preview", summary="Quantos leads de dias anteriores seriam apagados (nada é apagado)")
