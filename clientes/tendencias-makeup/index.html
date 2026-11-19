@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tendências Makeup | Maquiagem, cosméticos e acessórios</title>
+  <meta name="description" content="Tendências Makeup: maquiagem, unhas, cílios postiços, cabelo e acessórios. Peça pelo WhatsApp.">
+  <meta name="theme-color" content="#fff7f9">
+  <meta property="og:title" content="Tendências Makeup">
+  <meta property="og:description" content="Maquiagem, cosméticos e acessórios. Peça pelo WhatsApp.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="setup-banner" id="setup-banner" hidden role="status"></div>
+
+<header class="header">
+  <div class="container header-in">
+    <a class="logo" href="#topo"><span data-site="brand">Tendências Makeup</span></a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#categorias">Categorias</a>
+      <a href="#destaques">Destaques</a>
+      <a href="#como-comprar">Como comprar</a>
+      <a href="#perguntas">Perguntas</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="#contato" data-cta>Pedir no WhatsApp</a>
+  </div>
+</header>
+
+<main id="topo">
+  <section class="hero">
+    <div class="container hero-in">
+      <span class="eyebrow" data-site="eyebrow"></span>
+      <h1 data-site="headline"></h1>
+      <p class="lead" data-site="subheadline"></p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contato" data-cta>Fazer meu pedido</a>
+        <a class="btn btn-ghost" href="#categorias">Ver categorias</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="categorias">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Categorias</span><h2>Tudo para o seu look</h2></div>
+      <div class="grid-3" id="categories"></div>
+    </div>
+  </section>
+
+  <section class="section alt" id="destaques">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Destaques</span><h2>Produtos da loja</h2></div>
+      <div class="products" id="products"></div>
+      <p class="center"><a class="btn btn-ghost" id="insta-link" target="_blank" rel="noopener">Ver mais no Instagram</a></p>
+    </div>
+  </section>
+
+  <section class="section" id="beneficios">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Por que comprar aqui</span><h2>Compra simples e atendimento próximo</h2></div>
+      <div class="grid-3" id="benefits"></div>
+    </div>
+  </section>
+
+  <section class="section alt" id="depoimentos" hidden>
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Avaliações</span><h2>Quem já comprou conta</h2></div>
+      <div class="testimonials" id="testimonials"></div>
+    </div>
+  </section>
+
+  <section class="section" id="como-comprar">
+    <div class="container">
+      <div class="section-head"><span class="eyebrow">Como comprar</span><h2>Do pedido à sua casa</h2></div>
+      <ol class="steps" id="steps"></ol>
+    </div>
+  </section>
+
+  <section class="section alt" id="perguntas">
+    <div class="container narrow">
+      <div class="section-head"><span class="eyebrow">Perguntas frequentes</span><h2>Antes de pedir</h2></div>
+      <div id="faq"></div>
+    </div>
+  </section>
+
+  <section class="section" id="contato">
+    <div class="container two-col">
+      <div>
+        <span class="eyebrow">Contato</span>
+        <h2>Vamos montar o seu pedido?</h2>
+        <p class="muted">Diga o que procura e responderemos pelo WhatsApp.</p>
+        <ul class="contact-list">
+          <li><span>WhatsApp</span><a id="c-wa" target="_blank" rel="noopener"></a></li>
+          <li><span>Instagram</span><a id="c-ig" target="_blank" rel="noopener"></a></li>
+          <li data-row="email"><span>E-mail</span><a id="c-mail"></a></li>
+        </ul>
+      </div>
+      <form class="form" id="contact-form" novalidate>
+        <label>Seu nome<input name="nome" autocomplete="name" required maxlength="80"></label>
+        <label>Categoria de interesse
+          <select name="tipo"><option>Maquiagem</option><option>Unhas</option><option>Cílios postiços</option><option>Cabelo</option><option>Acessórios</option><option>Infantil</option><option>Outro</option></select>
+        </label>
+        <label>O que você procura?<input name="detalhes" maxlength="160" placeholder="Ex.: batom nude e um pó compacto"></label>
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+        <button class="btn btn-primary" type="submit">Enviar pelo WhatsApp</button>
+        <p class="fine">Ao enviar, abrimos o seu WhatsApp com a mensagem pronta. Este site não armazena o que você digita.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-in">
+    <p class="fine"><span data-site="brand"></span> <span data-site="city" data-optional></span> <span data-site="responsible" data-optional></span> <span data-site="cnpj" data-optional></span></p>
+    <p class="fine">Site criado por GTech Digital Studio.</p>
+  </div>
+</footer>
+
+<a class="float-wa" href="#contato" data-cta aria-label="Falar no WhatsApp">WhatsApp</a>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
