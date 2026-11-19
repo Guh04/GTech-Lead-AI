@@ -6,7 +6,7 @@
 window.SITE = {
   brand: "Tendências Makeup",
   logo: "",                        // ex.: "assets/logo.png" (arquivo enviado pela dona)
-  instagram: "",                   // [PREENCHER] @ da loja, sem o @
+  instagram: "tendenciasmakeups",
   whatsapp: "5515998421731",
   email: "",                       // opcional
   city: "",                        // [CONFIRMAR] ex.: "Sorocaba/SP"; deixe vazio se for só online
