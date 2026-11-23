@@ -262,6 +262,8 @@ export async function mount(view) {
 
   autoBtn.addEventListener('click', () => {
     if (autoRunning) { autoRunning = false; autoMsg.textContent = 'Parando…'; return; }
+    const hide = $('#ct-only-new', view);
+    if (!hide.checked) { hide.checked = true; load().then(runAuto); return; } // nunca repete quem já foi chamado
     runAuto();
   });
 
