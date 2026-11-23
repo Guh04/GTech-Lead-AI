@@ -259,6 +259,15 @@ class OutreachService:
         if self.settings.whatsmcp_configured:
             try:
                 delivery = await whatsapp_sender.send_text(self.settings, self.http, normalize_phone(lead["whatsapp"]), msg["body"])
+            except whatsapp_sender.NotOnWhatsApp as exc:
+                # Número sem WhatsApp: descarta a mensagem e move o lead para "Sem WhatsApp" (o telefone fica).
+                await self.db.update(
+                    "outreach_messages",
+                    {"status": OutreachStatus.SKIPPED.value, "sent_at": None},
+                    [("id", f"eq.{message_id}"), ("status", f"eq.{OutreachStatus.SENT.value}")],
+                )
+                await self.db.update("leads", {"whatsapp": None}, [("id", f"eq.{lead['id']}")])
+                raise AppError(409, "not_on_whatsapp", "Este número não tem WhatsApp. Movi o lead para “Sem WhatsApp”.") from exc
             except whatsapp_sender.SendFailed as exc:
                 # Nada saiu: devolve para "aprovada" para tentar de novo e não consumir o limite do dia.
                 await self.db.update(
