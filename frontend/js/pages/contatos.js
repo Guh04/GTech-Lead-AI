@@ -244,6 +244,7 @@ export async function mount(view) {
         } catch (err) {
           const code = err?.code || err?.data?.error?.code;
           if (code === 'too_soon') { await load(); continue; }
+          if (code === 'not_on_whatsapp') { skipped.add(lead.id); removeRow(lead.id); toast(`${lead.company_name}: sem WhatsApp, pulei.`, 'warning'); continue; }
           if (code === 'already_contacted') { skipped.add(lead.id); removeRow(lead.id); continue; }
           skipped.add(lead.id); // falha neste lead: para tudo para você ver o motivo
           toastError(err);
