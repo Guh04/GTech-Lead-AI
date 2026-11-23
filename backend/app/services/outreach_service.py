@@ -196,6 +196,11 @@ class OutreachService:
             raise AppError(409, "do_not_contact", "Este lead pediu para não ser contatado.")
         if not lead.get("whatsapp"):
             raise AppError(409, "no_whatsapp", "Este lead não tem WhatsApp cadastrado.")
+        already, _ = await self.db.select(
+            "outreach_messages", columns="id", filters=[("lead_id", f"eq.{lead_id}"), ("status", f"eq.{OutreachStatus.SENT.value}")], limit=1
+        )
+        if already:
+            raise AppError(409, "already_contacted", "Este lead já recebeu uma mensagem. Para não repetir, não vou enviar de novo.")
         st = await self.status()  # confere o limite ANTES de gastar uma chamada de IA
         if st.remaining <= 0:
             raise AppError(429, "daily_limit_reached", f"Limite diário de {st.daily_limit} mensagens atingido. Continue amanhã para proteger seu número.")
