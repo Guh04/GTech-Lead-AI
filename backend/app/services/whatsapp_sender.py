@@ -16,6 +16,10 @@ class SendFailed(Exception):
     """Nada foi enviado (chave inválida, serviço fora do ar, recusa). É seguro tentar de novo."""
 
 
+class NotOnWhatsApp(SendFailed):
+    """O número não tem conta de WhatsApp."""
+
+
 class SendUnknown(Exception):
     """A requisição saiu mas a resposta não chegou: a mensagem pode ter sido enviada. NÃO reenviar."""
 
