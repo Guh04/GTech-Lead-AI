@@ -78,6 +78,11 @@ async def send_text(settings: Settings, http: httpx.AsyncClient, phone: str, tex
         except (StopIteration, ValueError, KeyError):
             out = {}
     if result.get("isError") or out.get("status") == "refused":
+        refusal = out.get("refusal") or {}
+        if "not reachable" in str(refusal.get("message", "")).lower():
+            raise NotOnWhatsApp("Este número não tem WhatsApp.")
+        if refusal.get("message"):
+            raise SendFailed(f"O WhatsMCP não enviou: {refusal['message']}")
         reason = out.get("reason") or out.get("error") or "recusado"
         raise SendFailed(f"O WhatsMCP não enviou: {_REASONS.get(reason, reason)}.")
     status = out.get("status")
