@@ -202,7 +202,71 @@ export async function mount(view) {
     }
   });
 
+  // ---- Envio automático: chama os leads da lista um a um, respeitando intervalo e limite diário.
+  // Roda neste navegador (precisa da aba aberta) e só existe com WhatsMCP configurado.
+  const MIN_GAP_MS = 40000;
+  let autoRunning = false;
+  const autoBtn = $('#ct-auto-btn', view);
+  const autoMsg = $('#ct-auto-msg', view);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  async function sleepWhileAlive(ms, label) {
+    const end = Date.now() + ms;
+    while (alive && autoRunning && Date.now() < end) {
+      autoMsg.textContent = `${label} Próximo envio em ${Math.ceil((end - Date.now()) / 1000)}s`;
+      await sleep(500);
+    }
+  }
+
+  async function runAuto() {
+    autoRunning = true;
+    autoBtn.textContent = 'Parar envio automático';
+    let sent = 0;
+    const skipped = new Set();
+    try {
+      while (alive && autoRunning) {
+        if (tab !== 'with') tab = 'with';
+        const lead = items.find((l) => !skipped.has(l.id));
+        if (!lead) { autoMsg.textContent = `Fim da lista. ${sent} enviada(s) nesta rodada.`; break; }
+        if (status && status.remaining <= 0) { autoMsg.textContent = `Limite diário atingido. ${sent} enviada(s) nesta rodada.`; break; }
+        const waitMs = Math.max((status?.wait_seconds || 0) * 1000, 0);
+        if (waitMs > 0) await sleepWhileAlive(waitMs, 'Aguardando intervalo.');
+        if (!alive || !autoRunning) break;
+        autoMsg.textContent = `Enviando para ${lead.company_name}…`;
+        try {
+          const res = await api.post(`/outreach/quick/${lead.id}`);
+          status = res.status;
+          renderStatus();
+          sent += 1;
+          skipped.add(lead.id);
+          if ($('#ct-only-new', view).checked) removeRow(lead.id);
+          if (res.delivery === 'unknown') { toast('Envio sem confirmação do WhatsMCP. Parei por segurança: confira a conversa.', 'warning'); break; }
+        } catch (err) {
+          const code = err?.code || err?.data?.error?.code;
+          if (code === 'too_soon') { await load(); continue; }
+          skipped.add(lead.id); // falha neste lead: para tudo para você ver o motivo
+          toastError(err);
+          autoMsg.textContent = `Parado por erro em ${lead.company_name}. ${sent} enviada(s).`;
+          break;
+        }
+        // Garante pelo menos 40s entre envios, mesmo que o servidor aceite menos.
+        const gap = Math.max(MIN_GAP_MS, (status?.min_interval_seconds || 0) * 1000);
+        await sleepWhileAlive(gap, `${sent} enviada(s).`);
+      }
+    } finally {
+      autoRunning = false;
+      autoBtn.textContent = 'Enviar automático';
+      if (alive) load();
+    }
+  }
+
+  autoBtn.addEventListener('click', () => {
+    if (autoRunning) { autoRunning = false; autoMsg.textContent = 'Parando…'; return; }
+    runAuto();
+  });
+
   renderIcons();
   await load();
-  return () => { alive = false; if (timer) clearInterval(timer); };
+  $('#ct-auto', view).hidden = !(status && status.auto_send);
+  return () => { alive = false; autoRunning = false; if (timer) clearInterval(timer); };
 }
