@@ -67,6 +67,7 @@ async def send_text(settings: Settings, http: httpx.AsyncClient, phone: str, tex
         data = _parse(res.text)
     except (ValueError, json.JSONDecodeError) as exc:
         raise SendUnknown from exc
+    log.warning("WhatsMCP resposta: %s", res.text[:500])
     if "error" in data:
         raise SendFailed(f"WhatsMCP: {data['error'].get('message', 'erro')}")
     result = data.get("result") or {}
