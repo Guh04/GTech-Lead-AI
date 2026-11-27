@@ -1,8 +1,8 @@
 // Ficha completa do lead (drawer lateral) com ações e histórico.
 import { html, setHtml, $, formatDate, formatDateTime, timeAgo, formatPhone, whatsappLink, instagramLink, safeUrl, displayUrl } from '../utils.js';
-import { openDrawer, renderIcons, icon, toast, toastError, statusBadge, priorityBadge, landingBadge, scoreBar, confirmDialog, withLoading, errorState } from '../ui.js';
+import { openDrawer, renderIcons, icon, toast, toastError, statusBadge, priorityBadge, landingBadge, needBadges, scoreBar, confirmDialog, withLoading, errorState } from '../ui.js';
 import { api } from '../api.js';
-import { STATUSES, SOURCE_BY_KEY, ACTIVITY_ICONS } from '../constants.js';
+import { STATUSES, SOURCE_BY_KEY, ACTIVITY_ICONS, IG_LAST_POST, IG_ENGAGEMENT, IG_QUALITY, MARKETING_THRESHOLD } from '../constants.js';
 import { openLeadForm } from './lead-form.js';
 
 const item = (label, value, full = false) =>
@@ -21,6 +21,36 @@ function timeline(activities) {
     </li>`)}</ul>`;
 }
 
+const options = (list, current) =>
+  list.map((o) => html`<option value="${o.key}" ${o.key === current ? 'selected' : ''}>${o.label}</option>`);
+
+function marketingSection(lead) {
+  const ms = lead.marketing_score;
+  const level = ms == null ? '' : ms >= 70 ? 'high' : ms >= MARKETING_THRESHOLD ? 'medium' : 'low';
+  const summary = !lead.instagram
+    ? 'Sem Instagram cadastrado: conta como precisando de marketing. Se encontrar o perfil, adicione em Editar e avalie aqui.'
+    : ms == null
+      ? 'Abra o Instagram do lead e preencha a avaliação abaixo para calcular a necessidade de marketing.'
+      : ms >= MARKETING_THRESHOLD ? 'Perfil parado ou fraco: bom candidato para a parceria de marketing.' : 'Perfil ativo: pouca necessidade de marketing.';
+  return html`
+    <section class="detail-section">
+      <h3>Marketing (Instagram)</h3>
+      <div class="row" style="gap:16px;margin-bottom:8px">
+        ${ms == null ? html`<span class="badge" data-tone="slate">Não avaliado</span>` : html`<div style="min-width:180px">${scoreBar(ms, level)}</div>`}
+        ${lead.instagram ? html`<a class="btn btn-sm" href="${instagramLink(lead.instagram)}" target="_blank" rel="noopener noreferrer">${icon('instagram', 'icon-sm')}Abrir @${lead.instagram}</a>` : ''}
+      </div>
+      <p class="faint" style="font-size:12.5px;margin-bottom:12px">${summary}${lead.ig_checked_at ? ` Avaliado em ${formatDate(lead.ig_checked_at)}.` : ''}</p>
+      ${lead.instagram ? html`
+      <div class="detail-grid" style="margin:0">
+        <div class="field"><label for="ig-last">Último post</label><select class="select" id="ig-last">${options(IG_LAST_POST, lead.ig_last_post)}</select></div>
+        <div class="field"><label for="ig-eng">Engajamento</label><select class="select" id="ig-eng">${options(IG_ENGAGEMENT, lead.ig_engagement)}</select></div>
+        <div class="field"><label for="ig-quality">Aparência do perfil</label><select class="select" id="ig-quality">${options(IG_QUALITY, lead.ig_quality)}</select></div>
+        <div class="field"><label for="ig-followers">Seguidores</label><input class="input" id="ig-followers" type="number" min="0" step="1" inputmode="numeric" placeholder="ex.: 850" value="${lead.ig_followers ?? ''}"></div>
+      </div>
+      <div style="margin-top:10px"><button class="btn btn-sm btn-primary" id="ig-save">${icon('check', 'icon-sm')}Salvar avaliação</button></div>` : ''}
+    </section>`;
+}
+
 function render(lead, activities) {
   const site = safeUrl(lead.website);
   const fb = safeUrl(lead.facebook);
@@ -33,7 +63,7 @@ function render(lead, activities) {
       <div style="min-width:0;flex:1">
         <h2 style="font-size:19px;line-height:1.25">${lead.company_name}</h2>
         <p class="muted" style="margin-top:2px">${[lead.segment, place].filter(Boolean).join(' · ') || 'Sem segmento ou localização'}</p>
-        <div class="row" style="margin-top:10px;gap:8px">${statusBadge(lead.status)}${priorityBadge(lead.priority)}${landingBadge(lead.landing_page_status)}</div>
+        <div class="row" style="margin-top:10px;gap:8px">${statusBadge(lead.status)}${priorityBadge(lead.priority)}${landingBadge(lead.landing_page_status)}${needBadges(lead)}</div>
       </div>
       <button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Fechar">${icon('x')}</button>
     </div>
@@ -89,6 +119,8 @@ function render(lead, activities) {
           ${item('Facebook', link(fb, displayUrl(fb)))}
         </dl>
       </section>
+
+      ${marketingSection(lead)}
 
       <section class="detail-section">
         <h3>Origem</h3>
@@ -161,6 +193,26 @@ export async function openLeadDetail(id, { onChange } = {}) {
         select.value = lead.status;
         select.disabled = false;
       }
+    });
+
+    $('#ig-save', panel)?.addEventListener('click', async (e) => {
+      const raw = $('#ig-followers', panel).value.trim();
+      const followers = raw === '' ? null : Number(raw);
+      if (followers !== null && (!Number.isInteger(followers) || followers < 0)) {
+        toast('Informe os seguidores como um número inteiro (ou deixe em branco).', 'error');
+        return;
+      }
+      try {
+        await withLoading(e.currentTarget, () => api.updateLead(lead.id, {
+          ig_last_post: $('#ig-last', panel).value,
+          ig_engagement: $('#ig-eng', panel).value,
+          ig_quality: $('#ig-quality', panel).value,
+          ig_followers: followers,
+        }));
+        toast('Avaliação do Instagram salva.', 'success');
+        changed = true;
+        await load();
+      } catch (err) { toastError(err); }
     });
 
     $('#ld-note-btn', panel).addEventListener('click', async (e) => {

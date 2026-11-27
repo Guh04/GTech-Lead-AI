@@ -63,3 +63,37 @@ export const ACTIVITY_ICONS = {
 };
 
 export const PAGE_SIZE = 15;
+
+// ---------------------------------------------------------------------------
+// Parceria site + marketing: avaliação manual do Instagram
+// (regras e pesos em backend/app/services/scoring.py)
+// ---------------------------------------------------------------------------
+export const MARKETING_THRESHOLD = 50;
+
+export const IG_LAST_POST = [
+  { key: 'unknown', label: 'Não avaliado' },
+  { key: 'week', label: 'Nos últimos 7 dias' },
+  { key: 'month', label: 'Nos últimos 30 dias' },
+  { key: 'quarter', label: 'Nos últimos 3 meses' },
+  { key: 'older', label: 'Há mais de 3 meses' },
+  { key: 'none', label: 'Nenhum post' },
+];
+export const IG_ENGAGEMENT = [
+  { key: 'unknown', label: 'Não avaliado' },
+  { key: 'good', label: 'Bom (curtidas e comentários)' },
+  { key: 'low', label: 'Baixo (poucas curtidas)' },
+  { key: 'none', label: 'Nenhum (sem interação)' },
+];
+export const IG_QUALITY = [
+  { key: 'unknown', label: 'Não avaliado' },
+  { key: 'professional', label: 'Profissional (bio, destaques, identidade)' },
+  { key: 'amateur', label: 'Amador (fotos soltas, sem padrão)' },
+];
+
+/** Filtro por área da parceria. */
+export const NEEDS = [
+  { key: 'site', label: 'Precisa de site' },
+  { key: 'marketing', label: 'Precisa de marketing' },
+  { key: 'both', label: 'Precisa dos dois' },
+  { key: 'marketing_pending', label: 'Instagram a avaliar' },
+];

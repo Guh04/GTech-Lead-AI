@@ -23,11 +23,13 @@
     <select class="select" id="f-priority" aria-label="Filtrar por prioridade"><option value="">Toda prioridade</option></select>
     <select class="select" id="f-status" aria-label="Filtrar por status"><option value="">Todos os status</option></select>
     <select class="select" id="f-landing" aria-label="Filtrar por landing page"><option value="">Qualquer landing page</option></select>
+    <select class="select" id="f-need" aria-label="Filtrar por área (site ou marketing)"><option value="">Site e marketing</option></select>
     <select class="select" id="f-sort" aria-label="Ordenar">
       <option value="created_desc">Mais recentes</option>
       <option value="created_asc">Mais antigos</option>
       <option value="score_desc">Maior pontuação</option>
       <option value="score_asc">Menor pontuação</option>
+      <option value="marketing_desc">Mais precisa de marketing</option>
       <option value="name_asc">Nome (A–Z)</option>
     </select>
     <button class="btn btn-ghost btn-sm" id="f-clear" hidden><i data-lucide="x" class="icon icon-sm"></i>Limpar filtros</button>
@@ -42,6 +44,7 @@
           <th class="hide-sm">Cidade</th>
           <th class="hide-sm">Contato</th>
           <th class="hide-sm">Landing page</th>
+          <th class="hide-sm">Área</th>
           <th>Prioridade</th>
           <th class="hide-sm">Pontuação</th>
           <th>Estágio</th>

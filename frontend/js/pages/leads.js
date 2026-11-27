@@ -1,13 +1,13 @@
 // Gerenciamento de leads: busca, filtros, ordenação, CRUD e exportação CSV.
 import { api } from '../api.js';
 import { $, html, setHtml, debounce, hashParams, formatNumber, formatDate, formatPhone } from '../utils.js';
-import { renderIcons, icon, toast, toastError, errorState, emptyState, skeletonRows, statusBadge, priorityBadge, landingBadge, scoreBar, confirmDialog, withLoading } from '../ui.js';
+import { renderIcons, icon, toast, toastError, errorState, emptyState, skeletonRows, statusBadge, priorityBadge, landingBadge, needBadges, scoreBar, confirmDialog, withLoading } from '../ui.js';
 import { openLeadDetail } from '../components/lead-detail.js';
 import { openLeadForm } from '../components/lead-form.js';
 import { openLeadImport } from '../components/lead-import.js';
-import { STATUSES, PRIORITIES, LANDING, PAGE_SIZE } from '../constants.js';
+import { STATUSES, PRIORITIES, LANDING, NEEDS, PAGE_SIZE } from '../constants.js';
 
-const FILTER_IDS = { search: 'f-search', segment: 'f-segment', city: 'f-city', priority: 'f-priority', status: 'f-status', landing_status: 'f-landing', sort: 'f-sort' };
+const FILTER_IDS = { search: 'f-search', segment: 'f-segment', city: 'f-city', priority: 'f-priority', status: 'f-status', landing_status: 'f-landing', need: 'f-need', sort: 'f-sort' };
 
 function fillSelect(sel, options, current) {
   const first = sel.options[0];
@@ -23,7 +23,7 @@ function fillSelect(sel, options, current) {
 export async function mount(view) {
   const el = (key) => $(`#${FILTER_IDS[key]}`, view);
   const initial = hashParams();
-  const filters = { search: '', segment: '', city: '', priority: '', status: '', landing_status: '', sort: 'created_desc', ...pick(initial) };
+  const filters = { search: '', segment: '', city: '', priority: '', status: '', landing_status: '', need: '', sort: 'created_desc', ...pick(initial) };
   let page = 1;
   let reqId = 0;
   let alive = true;
@@ -37,6 +37,7 @@ export async function mount(view) {
   fillSelect(el('priority'), PRIORITIES.map((p) => [p.key, `Prioridade ${p.label.toLowerCase()}`]), filters.priority);
   fillSelect(el('status'), STATUSES.map((s) => [s.key, s.label]), filters.status);
   fillSelect(el('landing_status'), LANDING.map((l) => [l.key, l.label]), filters.landing_status);
+  fillSelect(el('need'), NEEDS.map((n) => [n.key, n.label]), filters.need);
   el('search').value = filters.search;
   el('sort').value = filters.sort;
 
@@ -45,10 +46,12 @@ export async function mount(view) {
     if (!alive) return;
     fillSelect(el('segment'), f.segments.map((s) => [s, s]), filters.segment);
     fillSelect(el('city'), f.cities.map((c) => [c, c]), filters.city);
+    const nc = f.need_counts || {};
+    fillSelect(el('need'), NEEDS.map((n) => [n.key, nc[n.key] != null ? `${n.label} (${nc[n.key]})` : n.label]), filters.need);
   }).catch(() => { /* filtros dinâmicos são opcionais; a lista funciona sem eles */ });
 
   const params = () => ({ ...filters, page, page_size: PAGE_SIZE });
-  const hasFilters = () => ['search', 'segment', 'city', 'priority', 'status', 'landing_status'].some((k) => filters[k]);
+  const hasFilters = () => ['search', 'segment', 'city', 'priority', 'status', 'landing_status', 'need'].some((k) => filters[k]);
 
   // --- renderização -------------------------------------------------------------
   function renderRows(items) {
@@ -59,6 +62,7 @@ export async function mount(view) {
         <td class="hide-sm nowrap">${[l.city, l.state].filter(Boolean).join(' / ') || html`<span class="faint">—</span>`}</td>
         <td class="hide-sm nowrap">${l.whatsapp || l.phone ? formatPhone(l.whatsapp || l.phone) : html`<span class="faint">—</span>`}${l.whatsapp ? html` <span class="faint" title="WhatsApp">${icon('message-circle', 'icon-sm')}</span>` : ''}</td>
         <td class="hide-sm">${landingBadge(l.landing_page_status)}</td>
+        <td class="hide-sm">${needBadges(l)}</td>
         <td>${priorityBadge(l.priority)}</td>
         <td class="hide-sm">${scoreBar(l.score, l.priority)}</td>
         <td>${statusBadge(l.status)}</td>
@@ -89,7 +93,7 @@ export async function mount(view) {
     const state = $('#leads-state', view);
     state.innerHTML = '';
     $('#leads-table', view).hidden = false;
-    setHtml($('#leads-body', view), skeletonRows(6, 10));
+    setHtml($('#leads-body', view), skeletonRows(6, 11));
     try {
       const res = await api.listLeads(params());
       if (!alive || my !== reqId) return;
@@ -118,12 +122,12 @@ export async function mount(view) {
 
   // --- eventos -------------------------------------------------------------------
   const onFilter = (key) => () => { filters[key] = el(key).value; page = 1; load(); };
-  ['segment', 'city', 'priority', 'status', 'landing_status', 'sort'].forEach((k) => el(k).addEventListener('change', onFilter(k)));
+  ['segment', 'city', 'priority', 'status', 'landing_status', 'need', 'sort'].forEach((k) => el(k).addEventListener('change', onFilter(k)));
   el('search').addEventListener('input', debounce(() => { filters.search = el('search').value.trim(); page = 1; load(); }, 350));
 
   $('#f-clear', view).addEventListener('click', () => {
-    Object.assign(filters, { search: '', segment: '', city: '', priority: '', status: '', landing_status: '' });
-    ['search', 'segment', 'city', 'priority', 'status', 'landing_status'].forEach((k) => { el(k).value = ''; });
+    Object.assign(filters, { search: '', segment: '', city: '', priority: '', status: '', landing_status: '', need: '' });
+    ['search', 'segment', 'city', 'priority', 'status', 'landing_status', 'need'].forEach((k) => { el(k).value = ''; });
     page = 1;
     load();
   });

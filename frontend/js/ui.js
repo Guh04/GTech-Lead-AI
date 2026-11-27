@@ -1,6 +1,6 @@
 // Componentes de interface compartilhados: toasts, modais, confirmação, drawer e badges.
 import { html, setHtml, raw, esc, $ } from './utils.js';
-import { PRIORITY_BY_KEY, STATUS_BY_KEY, LANDING_BY_KEY } from './constants.js';
+import { PRIORITY_BY_KEY, STATUS_BY_KEY, LANDING_BY_KEY, MARKETING_THRESHOLD } from './constants.js';
 
 /** Converte <i data-lucide="..."> em SVG. Seguro de chamar várias vezes. */
 export function renderIcons() {
@@ -163,6 +163,18 @@ export function priorityBadge(key) {
 export function landingBadge(key) {
   const l = LANDING_BY_KEY[key];
   return l ? html`<span class="badge" data-tone="${l.tone}" title="${l.hint}">${l.label}</span>` : '';
+}
+
+/** Áreas da parceria em que o lead se encaixa: Site e/ou Marketing (ou Instagram a avaliar). */
+export function needBadges(lead) {
+  const site = lead.landing_page_status === 'none' || lead.landing_page_status === 'site_only';
+  const ms = lead.marketing_score;
+  const mkt = ms != null && ms >= MARKETING_THRESHOLD;
+  const out = [];
+  if (site) out.push(html`<span class="badge" data-tone="blue" title="Sem site ou site sem landing page">Site</span>`);
+  if (mkt) out.push(html`<span class="badge" data-tone="violet" title="Necessidade de marketing: ${ms}/100">Marketing</span>`);
+  if (ms == null) out.push(html`<span class="badge" data-tone="slate" title="Tem Instagram, mas ainda não foi avaliado">Insta a avaliar</span>`);
+  return out.length ? html`<span class="row" style="gap:4px;flex-wrap:nowrap">${out}</span>` : html`<span class="faint">—</span>`;
 }
 
 export function scoreBar(score, priority) {
