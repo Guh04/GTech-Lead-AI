@@ -130,6 +130,17 @@ create table if not exists public.leads (
   landing_page_status    text not null default 'unknown'
                            check (landing_page_status in ('none', 'site_only', 'has_landing', 'unknown')),
 
+  -- Avaliação manual do Instagram (área de marketing)
+  ig_last_post           text not null default 'unknown'
+                           check (ig_last_post in ('unknown', 'week', 'month', 'quarter', 'older', 'none')),
+  ig_engagement          text not null default 'unknown'
+                           check (ig_engagement in ('unknown', 'good', 'low', 'none')),
+  ig_quality             text not null default 'unknown'
+                           check (ig_quality in ('unknown', 'professional', 'amateur')),
+  ig_followers           integer check (ig_followers >= 0),
+  ig_checked_at          timestamptz,
+  marketing_score        smallint check (marketing_score between 0 and 100),  -- null = não avaliado
+
   -- Pontuação comercial
   score                  smallint not null default 0 check (score between 0 and 100),
   score_source           text not null default 'rules' check (score_source in ('rules', 'manual', 'ai')),
@@ -169,6 +180,7 @@ create unique index if not exists uq_leads_owner_website
 create index if not exists idx_leads_owner_status    on public.leads (owner_id, status);
 create index if not exists idx_leads_owner_priority  on public.leads (owner_id, priority);
 create index if not exists idx_leads_owner_score     on public.leads (owner_id, score desc);
+create index if not exists idx_leads_owner_marketing on public.leads (owner_id, marketing_score desc nulls last);
 create index if not exists idx_leads_owner_created   on public.leads (owner_id, created_at desc);
 create index if not exists idx_leads_owner_segment   on public.leads (owner_id, segment);
 create index if not exists idx_leads_owner_city      on public.leads (owner_id, city);

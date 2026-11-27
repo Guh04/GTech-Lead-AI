@@ -17,6 +17,7 @@ from app.models.enums import (
     LeadStatus,
     Priority,
     ScoreSource,
+    ServiceNeed,
 )
 from app.schemas.lead import LeadCreate, LeadUpdate
 from app.services import scoring
@@ -27,16 +28,19 @@ SORTS = {
     "created_asc": "created_at.asc",
     "score_desc": "score.desc,created_at.desc",
     "score_asc": "score.asc,created_at.desc",
+    "marketing_desc": "marketing_score.desc.nullslast,created_at.desc",
     "name_asc": "company_name.asc",
 }
 
 # Campos que nunca podem ser gravados como NULL
-_NOT_NULLABLE = {"landing_page_status", "status", "source", "do_not_contact"}
+_NOT_NULLABLE = {"landing_page_status", "status", "source", "do_not_contact", "ig_last_post", "ig_engagement", "ig_quality"}
 # Campos que, ao mudar, devem aparecer no histórico como "atualização"
 _FIELD_LABELS = {
     "company_name": "nome", "contact_name": "responsável", "segment": "segmento", "city": "cidade",
     "state": "estado", "phone": "telefone", "whatsapp": "WhatsApp", "instagram": "Instagram",
     "facebook": "Facebook", "website": "site", "landing_page_status": "landing page", "score": "pontuação",
+    "ig_last_post": "último post no Instagram", "ig_engagement": "engajamento no Instagram",
+    "ig_quality": "qualidade do perfil", "ig_followers": "seguidores",
     "source": "origem", "source_url": "fonte", "notes": "observações", "do_not_contact": "não contatar",
 }
 
@@ -55,6 +59,7 @@ class LeadFilters:
     search_id: str | None = None
     has_whatsapp: bool | None = None  # True = só com WhatsApp; False = só sem
     contactable: bool = False  # ainda não contatado e sem pedido de "não contatar"
+    need: ServiceNeed | None = None  # área da parceria: site, marketing, ambos ou marketing a avaliar
     sort: str = "created_desc"
 
 
@@ -94,7 +99,28 @@ def build_filters(f: LeadFilters) -> list[Filter]:
     if f.contactable:
         out.append(("do_not_contact", "eq.false"))
         out.append(("status", f"in.({LeadStatus.NEW.value},{LeadStatus.ANALYZED.value})"))
+    if f.need:
+        site = ("landing_page_status", f"in.({','.join(scoring.SITE_NEED_STATUSES)})")
+        marketing = ("marketing_score", f"gte.{scoring.MARKETING_THRESHOLD}")
+        if f.need == ServiceNeed.SITE:
+            out.append(site)
+        elif f.need == ServiceNeed.MARKETING:
+            out.append(marketing)
+        elif f.need == ServiceNeed.BOTH:
+            out += [site, marketing]
+        else:
+            out.append(("marketing_score", "is.null"))
     return out
+
+
+def need_of(lead: dict) -> dict[str, bool]:
+    """Em quais áreas da parceria o lead se encaixa (usado nos contadores)."""
+    ms = lead.get("marketing_score")
+    return {
+        "site": lead.get("landing_page_status") in scoring.SITE_NEED_STATUSES,
+        "marketing": ms is not None and ms >= scoring.MARKETING_THRESHOLD,
+        "marketing_pending": ms is None,
+    }
 
 
 def _safe_csv(value) -> str:
@@ -109,12 +135,17 @@ CSV_COLUMNS = [
     ("company_name", "Empresa"), ("contact_name", "Responsável"), ("segment", "Segmento"), ("city", "Cidade"),
     ("state", "Estado"), ("phone", "Telefone"), ("whatsapp", "WhatsApp"), ("instagram", "Instagram"),
     ("facebook", "Facebook"), ("website", "Site"), ("landing_page_status", "Landing page"),
-    ("priority", "Prioridade"), ("score", "Pontuação"), ("status", "Estágio"), ("source", "Origem"),
+    ("priority", "Prioridade"), ("score", "Pontuação"), ("marketing_score", "Necessidade de marketing"),
+    ("ig_last_post", "Último post Instagram"), ("ig_engagement", "Engajamento Instagram"), ("ig_quality", "Perfil Instagram"),
+    ("ig_followers", "Seguidores"), ("status", "Estágio"), ("source", "Origem"),
     ("source_url", "Fonte pública"), ("do_not_contact", "Não contatar"), ("created_at", "Cadastrado em"), ("notes", "Observações"),
 ]
 _CSV_VALUE_LABELS = {
     "landing_page_status": {"none": "Sem site", "site_only": "Site sem landing", "has_landing": "Com landing page", "unknown": "Não verificado"},
     "priority": {"high": "Alta", "medium": "Média", "low": "Baixa"},
+    "ig_last_post": {"unknown": "", "week": "Últimos 7 dias", "month": "Últimos 30 dias", "quarter": "Últimos 3 meses", "older": "Mais de 3 meses", "none": "Sem posts"},
+    "ig_engagement": {"unknown": "", "good": "Bom", "low": "Baixo", "none": "Nenhum"},
+    "ig_quality": {"unknown": "", "professional": "Profissional", "amateur": "Amador"},
     "status": {s.value: label for s, label in STATUS_LABELS.items()},
     "source": {"manual": "Cadastro manual", "ai_agent": "Agente de IA", "google_maps": "Google Maps", "import": "Importação", "other": "Outra"},
 }
@@ -145,9 +176,10 @@ class LeadService:
         return rows[0]
 
     async def facets(self) -> dict:
-        rows = await self.db.select_all("leads", columns="segment,city,state,priority,status")
+        rows = await self.db.select_all("leads", columns="segment,city,state,priority,status,landing_page_status,marketing_score")
         active = [r for r in rows if r["status"] not in {s.value for s in CLOSED_STATUSES}]
         pc = Counter(r["priority"] for r in active)
+        needs = [need_of(r) for r in active]
         sc = Counter(r["status"] for r in rows)
 
         def distinct(key: str) -> list[str]:
@@ -160,6 +192,12 @@ class LeadService:
             "priority_counts": {p.value: pc.get(p.value, 0) for p in Priority},
             "priority_thresholds": {"high": scoring.THRESHOLD_HIGH, "medium": scoring.THRESHOLD_MEDIUM},
             "status_counts": {s.value: sc.get(s.value, 0) for s in LeadStatus},
+            "need_counts": {
+                "site": sum(n["site"] for n in needs),
+                "marketing": sum(n["marketing"] for n in needs),
+                "both": sum(n["site"] and n["marketing"] for n in needs),
+                "marketing_pending": sum(n["marketing_pending"] for n in needs),
+            },
         }
 
     async def export_csv(self, f: LeadFilters) -> str:
@@ -192,10 +230,18 @@ class LeadService:
             data["score"], data["score_source"] = scoring.compute_score(data), ScoreSource.RULES.value
         data["priority"] = scoring.priority_for(data["score"]).value
 
+    @staticmethod
+    def _apply_marketing(data: dict, ig_changed: bool) -> None:
+        """Recalcula a necessidade de marketing; marca a data da avaliação quando o Instagram foi avaliado agora."""
+        data["marketing_score"] = scoring.compute_marketing_score(data)
+        if ig_changed and scoring.instagram_evaluated(data):
+            data["ig_checked_at"] = datetime.now(timezone.utc).isoformat()
+
     async def create(self, payload: LeadCreate, *, search_id: str | None = None) -> dict:
         data = payload.model_dump(mode="json")
         manual = data.pop("score")
         self._apply_scoring(data, True, manual)
+        self._apply_marketing(data, ig_changed=True)
         data["owner_id"] = self.owner_id
         if search_id:
             data["prospecting_search_id"] = search_id
@@ -223,8 +269,11 @@ class LeadService:
             self._apply_scoring(merged, score_given, manual)
         else:  # pontuação manual/IA preservada; só a prioridade acompanha
             merged["priority"] = scoring.priority_for(int(existing["score"])).value
-        for key in ("score", "score_source", "priority"):
-            changes[key] = merged[key]
+        ig_changed = any(k in changes and changes[k] != existing.get(k) for k in scoring.IG_FIELDS)
+        self._apply_marketing(merged, ig_changed)
+        for key in ("score", "score_source", "priority", "marketing_score", "ig_checked_at"):
+            if key in merged:
+                changes[key] = merged[key]
 
         rows = await self.db.update("leads", changes, [("id", f"eq.{lead_id}")])
         if not rows:

@@ -232,7 +232,9 @@ class FakeSupabase:
                 a, b = _dt(cell), _dt(arg)
                 result = a >= b if op == "gte" else a <= b if op == "lte" else a < b
             else:
-                result = cell >= arg if op == "gte" else cell <= arg
+                if isinstance(cell, (int, float)) and not isinstance(cell, bool):
+                    arg = float(arg)
+                result = cell >= arg if op == "gte" else cell <= arg if op == "lte" else cell < arg
         else:
             raise AssertionError(f"operador não suportado pelo fake: {op}")
         return not result if negate else result
@@ -243,12 +245,17 @@ class FakeSupabase:
         if not spec:
             return rows
         for part in reversed(spec.split(",")):
-            col, _, direction = part.partition(".")
-            rows = sorted(
-                rows,
-                key=lambda r: (r.get(col) is None, str(r.get(col)).casefold() if isinstance(r.get(col), str) and not col.endswith("_at") else r.get(col)),
-                reverse=direction == "desc",
+            col, *mods = part.split(".")
+            desc = "desc" in mods
+            nulls_last = "nullslast" in mods or ("nullsfirst" not in mods and not desc)  # padrão do Postgres
+            present = [r for r in rows if r.get(col) is not None]
+            missing = [r for r in rows if r.get(col) is None]
+            present = sorted(
+                present,
+                key=lambda r: str(r.get(col)).casefold() if isinstance(r.get(col), str) and not col.endswith("_at") else r.get(col),
+                reverse=desc,
             )
+            rows = present + missing if nulls_last else missing + present
         return rows
 
     def _project(self, table, row, select: str):

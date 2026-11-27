@@ -5,6 +5,9 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.models.enums import (
+    IgEngagement,
+    IgLastPost,
+    IgQuality,
     LandingStatus,
     LeadSource,
     LeadStatus,
@@ -30,6 +33,11 @@ class _LeadFields(BaseModel):
     facebook: str | None = None
     website: str | None = None
     landing_page_status: LandingStatus = LandingStatus.UNKNOWN
+    # Avaliação manual do Instagram (marketing)
+    ig_last_post: IgLastPost = IgLastPost.UNKNOWN
+    ig_engagement: IgEngagement = IgEngagement.UNKNOWN
+    ig_quality: IgQuality = IgQuality.UNKNOWN
+    ig_followers: int | None = Field(default=None, ge=0, le=500_000_000)
     # Pontuação manual (0-100). Vazio/None = cálculo automático por regras.
     score: int | None = Field(default=None, ge=0, le=100)
     status: LeadStatus = LeadStatus.NEW
@@ -108,6 +116,9 @@ class LeadUpdate(_LeadFields):
     """PUT parcial: só os campos enviados são alterados; null limpa campos opcionais."""
 
     landing_page_status: LandingStatus | None = None  # type: ignore[assignment]
+    ig_last_post: IgLastPost | None = None  # type: ignore[assignment]
+    ig_engagement: IgEngagement | None = None  # type: ignore[assignment]
+    ig_quality: IgQuality | None = None  # type: ignore[assignment]
     status: LeadStatus | None = None  # type: ignore[assignment]
     source: LeadSource | None = None  # type: ignore[assignment]
     do_not_contact: bool | None = None  # type: ignore[assignment]
@@ -139,9 +150,15 @@ class LeadOut(BaseModel):
     facebook: str | None = None
     website: str | None = None
     landing_page_status: LandingStatus
+    ig_last_post: IgLastPost = IgLastPost.UNKNOWN
+    ig_engagement: IgEngagement = IgEngagement.UNKNOWN
+    ig_quality: IgQuality = IgQuality.UNKNOWN
+    ig_followers: int | None = None
+    ig_checked_at: datetime | None = None
     score: int
     score_source: ScoreSource
     priority: Priority
+    marketing_score: int | None = None  # None = Instagram ainda não avaliado
     source: LeadSource
     source_url: str | None = None
     prospecting_search_id: UUID | None = None
@@ -167,3 +184,4 @@ class Facets(BaseModel):
     priority_counts: dict[str, int]  # somente leads ativos (exclui fechados e perdidos)
     priority_thresholds: dict[str, int]
     status_counts: dict[str, int]
+    need_counts: dict[str, int] = {}  # leads ativos por área: site, marketing, both, marketing_pending

@@ -4,7 +4,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, Request, Response
 
-from app.models.enums import LandingStatus, LeadSource, LeadStatus, Priority
+from app.models.enums import LandingStatus, LeadSource, LeadStatus, Priority, ServiceNeed
 from app.routes.deps import lead_service, today_cutoff
 from app.schemas.activity import ActivityOut, NoteCreate
 from app.schemas.lead import Facets, LeadCreate, LeadOut, LeadPage, LeadUpdate, StatusChange
@@ -29,12 +29,13 @@ def filters(
     search_id: UUID | None = Query(None, description="Leads encontrados por uma pesquisa de prospecção"),
     has_whatsapp: bool | None = Query(None, description="true = somente com WhatsApp; false = somente sem"),
     contactable: bool = Query(False, description="Somente leads ainda não contatados e sem pedido de 'não contatar'"),
+    need: ServiceNeed | None = Query(None, description="Área da parceria: site, marketing, both ou marketing_pending"),
     sort: str = Query("created_desc", pattern="^(" + "|".join(SORTS) + ")$"),
 ) -> LeadFilters:
     return LeadFilters(
         search=search, segment=segment, city=city, state=state.upper() if state else None, priority=priority,
         status=status, landing_status=landing_status, source=source, active=active,
-        search_id=str(search_id) if search_id else None, has_whatsapp=has_whatsapp, contactable=contactable, sort=sort,
+        search_id=str(search_id) if search_id else None, has_whatsapp=has_whatsapp, contactable=contactable, need=need, sort=sort,
     )
 
 
