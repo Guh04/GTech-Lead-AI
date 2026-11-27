@@ -1,4 +1,4 @@
-"""Pontuação comercial (0-100) por regras transparentes.
+"""Pontuação comercial (0-100) por regras transparentes: site (score) e marketing (marketing_score).
 
 O objetivo comercial é vender landing pages. Quanto MENOS presença de conversão
 a empresa tem e quanto MAIS formas de contato/atividade digital ela possui,
