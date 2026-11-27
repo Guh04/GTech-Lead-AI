@@ -42,6 +42,43 @@ class LandingStatus(StrEnum):
     UNKNOWN = "unknown"
 
 
+class IgLastPost(StrEnum):
+    """Quando foi o último post no Instagram (avaliação manual)."""
+
+    UNKNOWN = "unknown"
+    WEEK = "week"  # nos últimos 7 dias
+    MONTH = "month"  # nos últimos 30 dias
+    QUARTER = "quarter"  # nos últimos 3 meses
+    OLDER = "older"  # há mais de 3 meses
+    NONE = "none"  # perfil sem nenhum post
+
+
+class IgEngagement(StrEnum):
+    """Curtidas/comentários dos posts recentes em relação ao tamanho do perfil."""
+
+    UNKNOWN = "unknown"
+    GOOD = "good"
+    LOW = "low"
+    NONE = "none"  # posts praticamente sem interação
+
+
+class IgQuality(StrEnum):
+    """Aparência do perfil: bio, destaques, identidade visual, fotos."""
+
+    UNKNOWN = "unknown"
+    PROFESSIONAL = "professional"
+    AMATEUR = "amateur"
+
+
+class ServiceNeed(StrEnum):
+    """Filtro por área da parceria: quem precisa de site, de marketing ou dos dois."""
+
+    SITE = "site"
+    MARKETING = "marketing"
+    BOTH = "both"
+    MARKETING_PENDING = "marketing_pending"  # tem Instagram, mas ainda não foi avaliado
+
+
 class LeadSource(StrEnum):
     MANUAL = "manual"
     AI_AGENT = "ai_agent"
